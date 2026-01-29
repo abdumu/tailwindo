@@ -586,7 +586,8 @@ class BootstrapFramework implements Framework
             'warning'   => ['orange-400', 'black', 'orange-500', 'orange-200'],
             'info'      => ['teal-500', 'white', 'teal-600', 'teal-300'],
             'light'     => ['gray-100', 'gray-800', 'gray-200', 'gray-400'],
-            'dark'      => ['gray-900', 'white', 'gray-800', 'gray-500'],
+            // Updated dark color to be closer to Bootstrap's #343a40
+            'dark'      => ['gray-800', 'white', 'gray-900', 'gray-500'],
         ];
 
         foreach ($colorMap as $name => $props) {
@@ -619,9 +620,10 @@ class BootstrapFramework implements Framework
             'card-group' => 'flex flex-col',
             'card'       => function () {
                 if ($this->isInLastSearches('card-deck')) {
-                    return 'relative block md:flex w-full md:min-w-0 md:mx-4 flex-col flex-shrink-0 flex-grow rounded-lg break-words border bg-white border-gray-200 shadow-sm';
+                    // Darker border (gray-300)
+                    return 'relative block md:flex w-full md:min-w-0 md:mx-4 flex-col flex-shrink-0 flex-grow rounded-lg break-words border bg-white border-gray-300 shadow-sm';
                 } else {
-                    return 'relative flex flex-col min-w-0 rounded-lg break-words border bg-white border-gray-200 shadow-sm';
+                    return 'relative flex flex-col min-w-0 rounded-lg break-words border bg-white border-gray-300 shadow-sm';
                 }
             },
             'card-body'         => 'flex-auto p-5',
@@ -629,8 +631,9 @@ class BootstrapFramework implements Framework
             'card-text'         => 'mb-0',
             'card-subtitle'     => '-mt-2 mb-0',
             'card-link'         => 'ml-6',
-            'card-header'       => 'py-3 px-6 mb-0 bg-gray-200 border-b border-gray-300 text-gray-900',
-            'card-footer'       => 'py-3 px-6 bg-gray-200 border-t border-gray-300',
+            // Lighter header background (gray-100 instead of gray-200)
+            'card-header'       => 'py-3 px-6 mb-0 bg-gray-100 border-b border-gray-300 text-gray-900',
+            'card-footer'       => 'py-3 px-6 bg-gray-100 border-t border-gray-300',
             'card-header-tabs'  => 'border-b-0 -ml-2 -mb-3',
             'card-header-pills' => '-ml-3 -mr-3',
             'card-img-overlay'  => 'absolute inset-y-0 inset-x-0 p-6',
