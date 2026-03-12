@@ -8,3 +8,4 @@
 - [x] Implement CLI commands (`scan`, `transform`, `check`)
 - [x] Add `vitest` tests and golden fixtures
 - [x] Update README.md and add GitHub Actions workflow
+- [x] Test multiple conversions and visual output using real templates (`clean-blog`)
