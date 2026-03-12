@@ -1,11 +1,11 @@
 import { describe, it, expect } from 'vitest';
-import { Converter, Dialect } from '../src/engine/converter';
+import { Converter, Dialect } from '../src/engine/converter.js';
 
 const dummyDialect: Dialect = {
   name: 'dummy',
   rules: [
     { match: 'd-none', replace: ['hidden'] },
-    { match: /^m-(.*)$/, replace: (m) => [`m-${m[1]}`] }
+    { match: /^m-(.*)$/, replace: (m: RegExpMatchArray) => [`m-${m[1]}`] }
   ]
 };
 
