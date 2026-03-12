@@ -1,5 +1,4 @@
 import { Dialect, RuleType } from '../engine/converter.js';
-import { sharedComponentRules } from './shared.js';
 
 const spacings = {
   '0': '0',
@@ -119,7 +118,6 @@ const getRules = (): RuleType[] => {
       const mappedSize = spacings[size as keyof typeof spacings];
       return [`${bp}:gap${axis ? `-${axis}` : ''}-${mappedSize}`];
     }},
-    ...sharedComponentRules
   ];
   return rules;
 };
