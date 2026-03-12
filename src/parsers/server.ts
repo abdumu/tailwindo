@@ -34,6 +34,14 @@ export function parseServerClasses(content: string): TokenRange[] {
           value: literal
         });
       }
+
+      tokens.push({
+        start: valueStart + dynMatch.index,
+        end: valueStart + dynMatch.index + dynMatch[0].length,
+        value: dynMatch[0],
+        type: 'dynamic'
+      });
+
       lastIndex = dynamicRegex.lastIndex;
     }
 

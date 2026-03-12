@@ -40,6 +40,16 @@ export function parseJsxClasses(content: string): TokenRange[] {
                 value: expression.value
               });
             } else if (expression.type === 'TemplateLiteral') {
+              // report skipped expressions
+              for (const expr of expression.expressions) {
+                tokens.push({
+                  start: expr.start,
+                  end: expr.end,
+                  value: content.substring(expr.start, expr.end),
+                  type: 'dynamic'
+                });
+              }
+
               // we process only the quasi parts (literals between ${expressions})
               for (const quasi of expression.quasis) {
                 if (quasi.value.raw.trim().length > 0) {
@@ -70,6 +80,14 @@ export function parseJsxClasses(content: string): TokenRange[] {
                   }
                 }
               }
+            } else {
+              // Other expressions like objects, arrays, variables inside className={...}
+              tokens.push({
+                start: expression.start,
+                end: expression.end,
+                value: content.substring(expression.start, expression.end),
+                type: 'dynamic'
+              });
             }
           }
         }

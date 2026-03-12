@@ -19,6 +19,13 @@ export function parseSvelteClasses(content: string): TokenRange[] {
               end: chunk.end,
               value: chunk.data
             });
+          } else if (chunk.type === 'MustacheTag') {
+            tokens.push({
+              start: chunk.start,
+              end: chunk.end,
+              value: content.substring(chunk.start, chunk.end),
+              type: 'dynamic'
+            });
           }
         }
       } else {

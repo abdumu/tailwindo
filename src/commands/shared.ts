@@ -1,8 +1,31 @@
 import fs from 'fs';
+import path from 'path';
 import { globSync } from 'glob';
-import { dialects, getDialect, DialectName } from '../dialects/index.js';
+import { getDialect, getDialectWithConfig, DialectName } from '../dialects/index.js';
 import { Converter, ConversionResult } from '../engine/converter.js';
 import { parseHtmlClasses, TokenRange } from '../parsers/html.js';
+
+export interface TailwindoConfig {
+  from?: DialectName;
+  prefix?: string;
+  colors?: Record<string, string>;
+}
+
+export function loadConfig(): TailwindoConfig {
+  const configPath = path.join(process.cwd(), 'tailwindo.config.json');
+  if (fs.existsSync(configPath)) {
+    try {
+      const configStr = fs.readFileSync(configPath, 'utf8');
+      return JSON.parse(configStr) as TailwindoConfig;
+    } catch (e) {
+      console.warn('Failed to parse tailwindo.config.json', e);
+    }
+  }
+  return {};
+}
+
+const loadedConfig = loadConfig();
+
 import { parseJsxClasses } from '../parsers/jsx.js';
 import { parseVueClasses } from '../parsers/vue.js';
 import { parseSvelteClasses } from '../parsers/svelte.js';
@@ -15,6 +38,7 @@ export interface FileResult {
   mappedCount: number;
   unmappedCount: number;
   unmappedTokens: string[];
+  skippedDynamicCount: number;
   originalContent: string;
   transformedContent: string;
 }
@@ -38,8 +62,13 @@ export function processFile(file: string, fromOption: DialectName): FileResult {
   const content = fs.readFileSync(file, 'utf8');
   const ext = file.split('.').pop()?.toLowerCase();
 
-  const dialectName = getDialect(fromOption, content);
-  const converter = new Converter(dialects[dialectName]);
+  // Override fromOption if config defines 'from'
+  const resolvedFromOption = loadedConfig.from || fromOption;
+
+  const dialectName = getDialect(resolvedFromOption, content);
+
+  const dialect = getDialectWithConfig(resolvedFromOption, content, loadedConfig.colors);
+  const converter = new Converter(dialect, loadedConfig.prefix);
 
   let tokens: TokenRange[] = [];
 
@@ -64,9 +93,15 @@ export function processFile(file: string, fromOption: DialectName): FileResult {
   let tokensScanned = 0;
   let mappedCount = 0;
   let unmappedCount = 0;
+  let skippedDynamicCount = 0;
   const unmappedTokensSet = new Set<string>();
 
   for (const token of tokens) {
+    if (token.type === 'dynamic') {
+      skippedDynamicCount++;
+      continue;
+    }
+
     const classStr = token.value;
     const result = converter.convertClasses(classStr);
 
@@ -91,6 +126,7 @@ export function processFile(file: string, fromOption: DialectName): FileResult {
     mappedCount,
     unmappedCount,
     unmappedTokens: Array.from(unmappedTokensSet),
+    skippedDynamicCount,
     originalContent: content,
     transformedContent
   };
