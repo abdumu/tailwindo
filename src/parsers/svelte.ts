@@ -7,7 +7,7 @@ export function parseSvelteClasses(content: string): TokenRange[] {
   try {
     const ast = parse(content);
 
-    function walk(node: any) {
+    const walk = (node: any) => {
       if (!node) return;
 
       if (node.type === 'Attribute' && node.name === 'class') {
@@ -31,7 +31,7 @@ export function parseSvelteClasses(content: string): TokenRange[] {
           }
         }
       }
-    }
+    };
 
     walk(ast.html);
 

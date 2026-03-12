@@ -53,7 +53,7 @@ export function parseJsxClasses(content: string): TokenRange[] {
                   const originalChunk = content.substring(quasi.start, quasi.end);
                   // The raw value might be missing backticks, so let's adjust start/end if they are included
                   // Actually, just find the raw string in that small chunk to be safe.
-                  let rawStr = quasi.value.raw;
+                  const rawStr = quasi.value.raw;
 
                   // if there's no word token, skip (e.g., just whitespace between expressions)
                   if (!rawStr.trim()) continue;
