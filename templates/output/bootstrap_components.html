@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Bootstrap demo</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+  </head>
+  <body>
+    <nav class="relative flex flex-wrap items-center justify-between py-3 bg-gray-100">
+      <div class="w-full mx-auto px-3 sm:px-4">
+        <a class="inline-block pt-1 pb-1 mr-4 text-lg whitespace-nowrap" href="#">Navbar</a>
+        <button class="py-1 px-3 text-lg leading-none bg-transparent rounded border border-transparent" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="inline-block w-6 h-6 bg-center bg-no-repeat bg-cover"></span>
+        </button>
+        <div class="hidden basis-full grow items-center sm:flex sm:basis-auto" id="navbarSupportedContent">
+          <ul class="flex flex-col pl-0 mb-2 mr-auto lg:mb-0 sm:flex-row">
+            <li class="nav-item">
+              <a class="block py-2 pr-4 pl-3" aria-current="page" href="#">Home</a>
+            </li>
+            <li class="nav-item">
+              <a class="block py-2 pr-4 pl-3" href="#">Link</a>
+            </li>
+            <li class="nav-item relative">
+              <a class="block py-2 pr-4 pl-3 inline-block w-0 h-0 ml-1 align-middle border-t border-t-solid border-r-[0.3em] border-r-transparent border-l-[0.3em] border-l-transparent border-b-0" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                Dropdown
+              </a>
+              <ul class="absolute z-50 hidden float-left py-2 m-0 mt-1 text-base text-left list-none bg-white rounded border border-gray-300">
+                <li><a class="block w-full py-1 px-4 clear-both font-normal text-gray-900 whitespace-nowrap bg-transparent" href="#">Action</a></li>
+                <li><a class="block w-full py-1 px-4 clear-both font-normal text-gray-900 whitespace-nowrap bg-transparent" href="#">Another action</a></li>
+                <li><hr class="h-0 my-2 overflow-hidden border-t border-gray-300"></li>
+                <li><a class="block w-full py-1 px-4 clear-both font-normal text-gray-900 whitespace-nowrap bg-transparent" href="#">Something else here</a></li>
+              </ul>
+            </li>
+            <li class="nav-item">
+              <a class="block py-2 pr-4 pl-3 opacity-65 pointer-events-none" aria-disabled="true">Disabled</a>
+            </li>
+          </ul>
+          <form class="flex" role="search">
+            <input class="block w-full px-3 py-1.5 text-base font-normal text-gray-700 bg-white bg-clip-padding border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none mr-2" type="search" placeholder="Search" aria-label="Search">
+            <button class="inline-block font-normal text-center whitespace-nowrap align-middle select-none border border-solid border-transparent px-3 py-1.5 text-base rounded transition-colors duration-150 ease-in-out text-green-500 border-green-500 hover:text-white hover:bg-green-500 hover:border-green-500 focus:shadow-none" type="submit">Search</button>
+          </form>
+        </div>
+      </div>
+    </nav>
+    <div class="w-full mx-auto px-3 sm:px-4 mt-12">
+      <div class="flex flex-wrap -mx-3">
+        <div class="relative w-full px-3 md:w-1/3 md:flex-none">
+          <div class="relative flex flex-col min-w-0 break-words bg-white bg-clip-border border border-solid border-gray-300 rounded" style="width: 18rem;">
+            <div class="flex-auto p-4">
+              <h5 class="mb-3 text-xl">Card title</h5>
+              <p class="mt-0 mb-4">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+              <a href="#" class="inline-block font-normal text-center whitespace-nowrap align-middle select-none border border-solid border-transparent px-3 py-1.5 text-base rounded transition-colors duration-150 ease-in-out text-white bg-blue-600 border-blue-600 hover:bg-blue-700 hover:border-blue-700 focus:shadow-none">Go somewhere</a>
+            </div>
+          </div>
+        </div>
+        <div class="relative w-full px-3 md:w-2/3 md:flex-none">
+          <div class="relative py-3 px-4 mb-4 border border-transparent rounded text-yellow-800 bg-yellow-100 border-yellow-200 pr-12 transition-opacity duration-150 ease-linear opacity-100" role="alert">
+            <strong>Holy guacamole!</strong> You should check in on some of those fields below.
+            <button type="button" class="box-content w-4 h-4 p-4 ml-auto text-black bg-transparent border-0 rounded opacity-50 focus:opacity-100 hover:text-black hover:opacity-75" data-bs-dismiss="alert" aria-label="Close"></button>
+          </div>
+          <table class="w-full mb-4 text-gray-900 border-collapse table-auto [&_tbody_tr:nth-of-type(odd)]:bg-gray-100 [&_tbody_tr:hover]:bg-gray-200">
+            <thead>
+              <tr>
+                <th scope="col">#</th>
+                <th scope="col">First</th>
+                <th scope="col">Last</th>
+                <th scope="col">Handle</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <th scope="row">1</th>
+                <td>Mark</td>
+                <td>Otto</td>
+                <td>@mdo</td>
+              </tr>
+              <tr>
+                <th scope="row">2</th>
+                <td>Jacob</td>
+                <td>Thornton</td>
+                <td>@fat</td>
+              </tr>
+              <tr>
+                <th scope="row">3</th>
+                <td colspan="2">Larry the Bird</td>
+                <td>@twitter</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
