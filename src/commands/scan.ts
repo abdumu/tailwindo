@@ -18,22 +18,25 @@ export function scanCommand(path: string, options: ScanOptions) {
   let totalTokens = 0;
   let totalMapped = 0;
   let totalUnmapped = 0;
+  let totalSkippedDynamic = 0;
 
   for (const r of results) {
     totalTokens += r.tokensScanned;
     totalMapped += r.mappedCount;
     totalUnmapped += r.unmappedCount;
+    totalSkippedDynamic += r.skippedDynamicCount;
   }
 
   if (options.format === 'json') {
     console.log(JSON.stringify({
-      summary: { totalFiles, totalTokens, totalMapped, totalUnmapped },
+      summary: { totalFiles, totalTokens, totalMapped, totalUnmapped, totalSkippedDynamic },
       files: results.map(r => ({
         file: r.file,
         dialect: r.dialectUsed,
         scanned: r.tokensScanned,
         mapped: r.mappedCount,
         unmapped: r.unmappedCount,
+        skippedDynamic: r.skippedDynamicCount,
         unmappedTokens: r.unmappedTokens
       }))
     }, null, 2));
@@ -45,6 +48,9 @@ export function scanCommand(path: string, options: ScanOptions) {
   console.log(`Total class tokens: ${totalTokens}`);
   console.log(`Mapped tokens: ${chalk.green(totalMapped)}`);
   console.log(`Unmapped tokens: ${chalk.red(totalUnmapped)}`);
+  if (totalSkippedDynamic > 0) {
+    console.log(`Skipped dynamic regions: ${chalk.yellow(totalSkippedDynamic)}`);
+  }
   console.log('');
 
   if (totalUnmapped > 0) {

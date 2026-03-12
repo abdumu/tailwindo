@@ -1,5 +1,6 @@
-import { bootstrap4 } from './bootstrap4.js';
-import { bootstrap5 } from './bootstrap5.js';
+import { bootstrap4, getBootstrap4Rules } from './bootstrap4.js';
+import { bootstrap5, getBootstrap5Rules } from './bootstrap5.js';
+import { Dialect } from '../engine/converter.js';
 
 export const dialects = {
   bootstrap4,
@@ -21,4 +22,20 @@ export function getDialect(name: DialectName, content: string = ''): 'bootstrap4
     return autoDetectDialect(content);
   }
   return name;
+}
+
+export function getDialectWithConfig(name: DialectName, content: string = '', configColors?: Record<string, string>): Dialect {
+  const resolvedName = getDialect(name, content);
+
+  if (resolvedName === 'bootstrap4') {
+    return {
+      name: 'bootstrap4',
+      rules: getBootstrap4Rules(configColors)
+    };
+  } else {
+    return {
+      name: 'bootstrap5',
+      rules: getBootstrap5Rules(configColors)
+    };
+  }
 }

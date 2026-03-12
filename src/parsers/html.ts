@@ -4,6 +4,7 @@ export interface TokenRange {
   start: number;
   end: number;
   value: string;
+  type?: 'class' | 'dynamic';
 }
 
 export function parseHtmlClasses(content: string): TokenRange[] {

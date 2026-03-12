@@ -5,19 +5,21 @@ describe('Server Template Parser', () => {
   it('should find classes ignoring dynamic blade/twig chunks', () => {
     const code = `<div class="d-flex {{ $active ? 'p-3' : 'p-2' }} text-center bg-primary"></div>`;
     const tokens = parseServerClasses(code);
-    expect(tokens.length).toBe(2);
+    expect(tokens.length).toBe(3);
     expect(tokens[0].value).toBe('d-flex ');
-    expect(tokens[1].value).toBe(' text-center bg-primary');
+    expect(tokens[1].type).toBe('dynamic');
+    expect(tokens[2].value).toBe(' text-center bg-primary');
 
     expect(code.substring(tokens[0].start, tokens[0].end)).toBe('d-flex ');
-    expect(code.substring(tokens[1].start, tokens[1].end)).toBe(' text-center bg-primary');
+    expect(code.substring(tokens[2].start, tokens[2].end)).toBe(' text-center bg-primary');
   });
 
   it('should handle PHP blocks', () => {
     const code = `<span class='font-weight-bold <?= $foo ?>'></span>`;
     const tokens = parseServerClasses(code);
-    expect(tokens.length).toBe(1);
+    expect(tokens.length).toBe(2);
     expect(tokens[0].value).toBe('font-weight-bold ');
+    expect(tokens[1].type).toBe('dynamic');
 
     expect(code.substring(tokens[0].start, tokens[0].end)).toBe('font-weight-bold ');
   });

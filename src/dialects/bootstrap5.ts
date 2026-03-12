@@ -10,7 +10,7 @@ const spacings = {
   'auto': 'auto'
 };
 
-const colors = {
+const defaultColors = {
   'primary': 'blue-600',
   'secondary': 'gray-600',
   'success': 'green-500',
@@ -23,7 +23,8 @@ const colors = {
   'muted': 'gray-700',
 };
 
-const getRules = (): RuleType[] => {
+export const getBootstrap5Rules = (customColors?: Record<string, string>): RuleType[] => {
+  const colors = { ...defaultColors, ...customColors };
   const rules: RuleType[] = [
     // display
     { match: 'd-none', replace: ['hidden'] },
@@ -124,5 +125,5 @@ const getRules = (): RuleType[] => {
 
 export const bootstrap5: Dialect = {
   name: 'bootstrap5',
-  rules: getRules()
+  rules: getBootstrap5Rules()
 };

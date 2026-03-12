@@ -25,9 +25,10 @@ describe('JSX Parser', () => {
       );
     `;
     const tokens = parseJsxClasses(code);
-    // Quasis: "container p-3 " and " text-center"
-    expect(tokens.length).toBe(2);
-    expect(tokens[0].value).toBe('container p-3 ');
-    expect(tokens[1].value).toBe(' text-center');
+    // Quasis: "container p-3 " and " text-center", plus the dynamic expression
+    expect(tokens.length).toBe(3);
+    expect(tokens[0].type).toBe('dynamic');
+    expect(tokens[1].value).toBe('container p-3 ');
+    expect(tokens[2].value).toBe(' text-center');
   });
 });
