@@ -28,7 +28,7 @@ export function getFiles(pathStr: string, extensions: string, ignorePath?: strin
   const exts = extensions.split(',').map(e => e.trim());
   const pattern = `${pathStr}/**/*.{${exts.join(',')}}`;
 
-  let ignorePattern: string[] = ['**/node_modules/**'];
+  const ignorePattern: string[] = ['**/node_modules/**'];
   if (ignorePath) ignorePattern.push(ignorePath);
 
   return globSync(pattern, { ignore: ignorePattern, absolute: true });
