@@ -15,7 +15,7 @@
   "type": "module",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/awssat/tailwindo.git"
+    "url": "git+https://github.com/abdumu/tailwindo.git"
   },
   "author": "Awssat",
   "license": "MIT",

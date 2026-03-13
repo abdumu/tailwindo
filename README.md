@@ -1,6 +1,6 @@
 # Tailwindo
 
-[![Actions Status](https://github.com/awssat/tailwindo/workflows/Node%20CI/badge.svg)](https://github.com/awssat/tailwindo/actions)
+[![Actions Status](https://github.com/abdumu/tailwindo/workflows/Node%20CI/badge.svg)](https://github.com/abdumu/tailwindo/actions)
 
 <p align="center">
   <img src="https://pbs.twimg.com/media/DQ-mDgSX0AUpCPL.png">
@@ -15,6 +15,7 @@ It has been rewritten from PHP to a modern TypeScript CLI capable of handling te
 - Understands Vue, JSX, Svelte and will not mistakenly replace JS variables named similarly to bootstrap classes.
 - Ignores template dynamic injections (e.g. `{{ var }}`).
 - Auto-detects Bootstrap 4 vs Bootstrap 5 rules out of the box.
+- **Smart Class Classification:** Distinguishes between custom/BEM/Tailwind classes and unmapped Bootstrap classes. Unrecognized custom classes are safely ignored, preventing false positive errors during `check` or CI workflows.
 
 ## Installation
 
@@ -48,12 +49,12 @@ tailwindo transform ./src --write
 
 ### Scan files
 
-Scan files to gather a summary of how many class tokens will map vs what will remain unmapped.
+Scan files to gather a summary of how many class tokens will map vs what will remain unmapped. "Unmapped" tokens strictly refer to classes that match Bootstrap utility patterns (like `d-`, `m-`, `col-`, etc.) but have no exact Tailwind equivalent rule yet. Custom application classes, Tailwind classes, and BEM blocks are recognized as "custom" and safely ignored.
 
 ```bash
 tailwindo scan ./src
 ```
-Outputs a summary directly to the terminal, or specify `--format json` for integration.
+Outputs a summary directly to the terminal, including a conversion confidence score, or specify `--format json` for integration.
 
 ### Check files in CI
 
@@ -68,7 +69,7 @@ Exits `1` and prints the offending files if there are changes or unmapped tokens
 
 Currently, Tailwindo's auto component extraction mode is marked as future development. It handles baseline flexbox, display, text layouts, borders, alignments, and simple colors out of the box across BS4 & 5.
 
-Dynamic bindings in React \``${expr}`\` inside `className`, or `{{ ... }}` blocks in Blade are correctly skipped, preserving runtime behavior while converting the static literals surrounding them.
+Dynamic bindings in React \`${expr}\` inside `className`, or `{{ ... }}` blocks in Blade are correctly skipped, preserving runtime behavior while converting the static literals surrounding them. For Vue, `:class` bindings are currently marked as completely dynamic and skipped entirely to ensure safe, offset-correct file compilation.
 
 ## Help Us
 - If you find unexpected conversion results, please create an issue or pull request.

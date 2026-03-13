@@ -7,6 +7,7 @@ import { DialectName } from '../dialects/index.js';
 interface TransformOptions {
   from: string;
   extensions: string;
+  ignore?: string;
   write: boolean;
   diff: boolean;
   backup: boolean;
@@ -14,7 +15,8 @@ interface TransformOptions {
 }
 
 export function transformCommand(path: string, options: TransformOptions) {
-  const files = getFiles(path, options.extensions);
+  const ignorePaths = options.ignore ? options.ignore.split(',').map(s => s.trim()) : undefined;
+  const files = getFiles(path, options.extensions, ignorePaths);
 
   if (options.components) {
     console.log(chalk.yellow('Components mode is not fully implemented yet. Please use standard migration.'));

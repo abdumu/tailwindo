@@ -33,33 +33,15 @@ export function parseVueClasses(content: string): TokenRange[] {
           for (const prop of node.props || []) {
             if (prop.type === 7 && prop.name === 'bind' && prop.arg && prop.arg.content === 'class') {
               if (prop.exp && prop.exp.content) {
-                try {
-                  const ast = babelParse(`(${prop.exp.content})`, {
-                     sourceType: 'module'
-                  });
-                  traverse(ast, {
-                    StringLiteral(path: any) {
-                      tokens.push({
-                        // `prop.exp.loc.start.offset` is relative to the ENTIRE FILE
-                        // So we don't add `templateStart` to it!
-                        start: prop.exp.loc.start.offset + path.node.start,
-                        end: prop.exp.loc.start.offset + path.node.end - 2, // remove quotes, since babelParse wraps in parens
-                        value: path.node.value
-                      });
-                    }
-                  });
-                } catch(e) {
-                   // regex fallback if no AST
-                   const regex = /(['"])(.*?)\1/g;
-                   let match;
-                   while ((match = regex.exec(prop.exp.content)) !== null) {
-                     tokens.push({
-                       start: prop.exp.loc.start.offset + match.index + 1,
-                       end: prop.exp.loc.start.offset + match.index + 1 + match[2].length,
-                       value: match[2]
-                     });
-                   }
-                }
+                // To avoid offset corruption and fragile parsing of bound classes,
+                // we mark the entire :class expression as a dynamic token.
+                // This means it will be skipped during conversion, keeping the file safe.
+                tokens.push({
+                  start: prop.exp.loc.start.offset,
+                  end: prop.exp.loc.end.offset,
+                  value: prop.exp.content,
+                  type: 'dynamic'
+                });
               }
             }
           }

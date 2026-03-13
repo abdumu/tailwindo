@@ -36,7 +36,7 @@ export const getBootstrap5Rules = (customColors?: Record<string, string>): RuleT
     { match: 'd-table-row', replace: ['table-row'] },
     { match: 'd-flex', replace: ['flex'] },
     { match: 'd-inline-flex', replace: ['inline-flex'] },
-    { match: /^d-(sm|md|lg|xl|xxl)-(none|inline|inline-block|block|table|table-cell|table-row|flex|inline-flex)$/, replace: (m) => [`${m[1]}:${m[2] === 'none' ? 'hidden' : m[2]}`] },
+    { match: /^d-(sm|md|lg|xl|xxl)-(none|inline|inline-block|block|table|table-cell|table-row|flex|inline-flex)$/, replace: (m) => [`${m[1]}:${m[2] === 'none' ? 'hidden' : m[2]}`] , confidence: 0.8 },
 
     // text alignment
     { match: 'text-start', replace: ['text-left'] },
@@ -66,13 +66,13 @@ export const getBootstrap5Rules = (customColors?: Record<string, string>): RuleT
       const align = m[1] === 'start' ? 'start' : (m[1] === 'end' ? 'end' : m[1]);
       return [`justify-${align}`]; // tailwind uses start, end
     }},
-    { match: /^justify-content-(sm|md|lg|xl|xxl)-(start|end|center|between|around|evenly)$/, replace: (m) => [`${m[1]}:justify-${m[2]}`] },
+    { match: /^justify-content-(sm|md|lg|xl|xxl)-(start|end|center|between|around|evenly)$/, replace: (m) => [`${m[1]}:justify-${m[2]}`] , confidence: 0.8 },
 
-    { match: /^align-items-(start|end|center|stretch|baseline)$/, replace: (m) => [`items-${m[1]}`] },
-    { match: /^align-items-(sm|md|lg|xl|xxl)-(start|end|center|stretch|baseline)$/, replace: (m) => [`${m[1]}:items-${m[2]}`] },
+    { match: /^align-items-(start|end|center|stretch|baseline)$/, replace: (m) => [`items-${m[1]}`] , confidence: 0.8 },
+    { match: /^align-items-(sm|md|lg|xl|xxl)-(start|end|center|stretch|baseline)$/, replace: (m) => [`${m[1]}:items-${m[2]}`] , confidence: 0.8 },
 
-    { match: /^align-self-(start|end|center|stretch|baseline)$/, replace: (m) => [`self-${m[1]}`] },
-    { match: /^align-self-(sm|md|lg|xl|xxl)-(start|end|center|stretch|baseline)$/, replace: (m) => [`${m[1]}:self-${m[2]}`] },
+    { match: /^align-self-(start|end|center|stretch|baseline)$/, replace: (m) => [`self-${m[1]}`] , confidence: 0.8 },
+    { match: /^align-self-(sm|md|lg|xl|xxl)-(start|end|center|stretch|baseline)$/, replace: (m) => [`${m[1]}:self-${m[2]}`] , confidence: 0.8 },
 
 
     // Grid
@@ -80,11 +80,11 @@ export const getBootstrap5Rules = (customColors?: Record<string, string>): RuleT
     { match: 'container-fluid', replace: ['w-full'] },
     { match: 'row', replace: ['flex', 'flex-wrap', '-mx-3'] },
     { match: 'col', replace: ['flex-1', 'px-3'] },
-    { match: /^col-(1|2|3|4|5|6|7|8|9|10|11|12)$/, replace: (m) => [`w-${m[1]}/12`, 'px-3'] },
-    { match: /^col-(sm|md|lg|xl|xxl)-(1|2|3|4|5|6|7|8|9|10|11|12)$/, replace: (m) => [`${m[1]}:w-${m[2]}/12`, 'px-3'] },
-    { match: /^col-(sm|md|lg|xl|xxl)$/, replace: (m) => [`${m[1]}:flex-1`, 'px-3'] },
-    { match: /^col-auto$/, replace: ['w-auto', 'px-3'] },
-    { match: /^col-(sm|md|lg|xl|xxl)-auto$/, replace: (m) => [`${m[1]}:w-auto`, 'px-3'] },
+    { match: /^col-(1|2|3|4|5|6|7|8|9|10|11|12)$/, replace: (m) => [`w-${m[1]}/12`, 'px-3'] , confidence: 0.8 },
+    { match: /^col-(sm|md|lg|xl|xxl)-(1|2|3|4|5|6|7|8|9|10|11|12)$/, replace: (m) => [`${m[1]}:w-${m[2]}/12`, 'px-3'] , confidence: 0.8 },
+    { match: /^col-(sm|md|lg|xl|xxl)$/, replace: (m) => [`${m[1]}:flex-1`, 'px-3'] , confidence: 0.8 },
+    { match: /^col-auto$/, replace: ['w-auto', 'px-3'] , confidence: 0.8 },
+    { match: /^col-(sm|md|lg|xl|xxl)-auto$/, replace: (m) => [`${m[1]}:w-auto`, 'px-3'] , confidence: 0.8 },
 
     // Buttons
     { match: 'btn', replace: ['inline-block', 'font-normal', 'text-center', 'whitespace-nowrap', 'align-middle', 'select-none', 'border', 'border-transparent', 'py-1.5', 'px-3', 'rounded', 'leading-normal', 'no-underline', 'transition-colors', 'duration-150'] },
@@ -107,7 +107,7 @@ export const getBootstrap5Rules = (customColors?: Record<string, string>): RuleT
     { match: 'navbar-nav', replace: ['flex', 'flex-col', 'pl-0', 'mb-0', 'list-none'] },
     { match: 'nav-item', replace: [] }, // Often purely structural in flex
     { match: 'nav-link', replace: ['block', 'py-2', 'pr-4', 'pl-3'] },
-    { match: /^navbar-expand-(sm|md|lg|xl|xxl)$/, replace: (m) => [`${m[1]}:flex-nowrap`, `${m[1]}:justify-start`] },
+    { match: /^navbar-expand-(sm|md|lg|xl|xxl)$/, replace: (m) => [`${m[1]}:flex-nowrap`, `${m[1]}:justify-start`] , confidence: 0.8 },
     { match: 'navbar-toggler', replace: ['py-1', 'px-2', 'text-lg', 'leading-none', 'bg-transparent', 'border', 'border-transparent', 'rounded', 'lg:hidden'] },
     { match: 'navbar-collapse', replace: ['flex-basis-full', 'grow', 'items-center', 'lg:flex'] },
     { match: 'collapse', replace: ['hidden'] },
@@ -117,8 +117,8 @@ export const getBootstrap5Rules = (customColors?: Record<string, string>): RuleT
     { match: 'list-unstyled', replace: ['list-none', 'pl-0'] },
 
     // Colors
-    { match: /^text-(primary|secondary|success|danger|warning|info|light|dark|white|muted)$/, replace: (m) => [`text-${colors[m[1] as keyof typeof colors]}`] },
-    { match: /^bg-(primary|secondary|success|danger|warning|info|light|dark|white|muted)$/, replace: (m) => [`bg-${colors[m[1] as keyof typeof colors]}`] },
+    { match: /^text-(primary|secondary|success|danger|warning|info|light|dark|white|muted)$/, replace: (m) => [`text-${colors[m[1] as keyof typeof colors]}`] , confidence: 0.8 },
+    { match: /^bg-(primary|secondary|success|danger|warning|info|light|dark|white|muted)$/, replace: (m) => [`bg-${colors[m[1] as keyof typeof colors]}`] , confidence: 0.8 },
 
     // spacing m, p (BS5 uses start/end for left/right mapping to s/e or l/r)
     {
