@@ -9,6 +9,8 @@ export interface Dialect {
   name: string;
 }
 
+import { contextualRules } from './contextualRules.js';
+
 export interface ConversionResult {
   original: string;
   converted: string;
@@ -20,10 +22,16 @@ export interface ConversionResult {
 export class Converter {
   private dialect: Dialect;
   private prefix: string;
+  private componentsMode: boolean;
+  private mode: 'utilities' | 'fidelity' | 'mixed';
+  public extractedComponents: Map<string, string[]>;
 
-  constructor(dialect: Dialect, prefix: string = '') {
+  constructor(dialect: Dialect, prefix: string = '', componentsMode: boolean = false, mode: 'utilities' | 'fidelity' | 'mixed' = 'mixed') {
     this.dialect = dialect;
     this.prefix = prefix;
+    this.componentsMode = componentsMode;
+    this.mode = mode;
+    this.extractedComponents = new Map();
   }
 
   isBootstrapLikeToken(token: string): boolean {
@@ -49,22 +57,71 @@ export class Converter {
   convertClasses(classString: string): ConversionResult {
     // Regex to match tokens and the whitespace between them.
     // It captures both word/class tokens and whitespace tokens separately.
-    const tokens = classString.split(/(\s+)/);
+    let tokens = classString.split(/(\s+)/);
     let convertedString = '';
     const mappedTokens: { from: string; to: string; confidence: number }[] = [];
     const unmappedTokens: string[] = [];
     const customTokens: string[] = [];
 
+    // Filter out whitespace for contextual rules match
+    let nonSpaceTokens = tokens.filter(t => t.trim() !== '');
+
+    // Track tokens replaced by contextual rules to prevent double-conversion and preserve whitespace
+    const replacedByContextual = new Map<string, string>(); // Original token string -> Replacements string
+
+    // Contextual Rules Pass
+    if (this.mode !== 'utilities') {
+      for (const rule of contextualRules) {
+        if (rule.appliesToDialects.includes(this.dialect.name as any) && rule.match(nonSpaceTokens)) {
+          const result = rule.transform(nonSpaceTokens); // Add options for colors etc. later if needed
+          nonSpaceTokens = result.tokens;
+
+          for (const mapping of result.mapped) {
+            if (this.componentsMode) {
+              // Keep original tokens for HTML, record mapping for CSS
+              for (const fromToken of mapping.from) {
+                if (!this.extractedComponents.has(fromToken)) {
+                   this.extractedComponents.set(fromToken, mapping.to.map(t => this.prefix + t));
+                }
+                mappedTokens.push({ from: fromToken, to: fromToken, confidence: mapping.confidence });
+              }
+
+              // In components mode, we want the token to remain untouched in HTML.
+              // We set its replacement to itself so it won't be processed by single-token rules later.
+              for (const fromToken of mapping.from) {
+                replacedByContextual.set(fromToken, fromToken);
+              }
+            } else {
+              // Normal utility conversion mode
+              for (const fromToken of mapping.from) {
+                 const toJoined = mapping.to.map(t => this.prefix + t).join(' ');
+                 mappedTokens.push({ from: fromToken, to: toJoined, confidence: mapping.confidence });
+                 replacedByContextual.set(fromToken, toJoined);
+              }
+            }
+          }
+        }
+      }
+    }
+
+    convertedString = '';
+
     for (const token of tokens) {
       if (!token) continue;
 
-      // If it's pure whitespace, preserve it exactly
       if (/^\s+$/.test(token)) {
         convertedString += token;
         continue;
       }
 
-      // It's a class token
+      // Check if handled by contextual pass
+      if (replacedByContextual.has(token)) {
+        convertedString += replacedByContextual.get(token);
+        // Do not pass this to single-token dialect rules to avoid double-conversion!
+        continue;
+      }
+
+      // Single-token Dialect Rules Pass
       let replaced = false;
       for (const rule of this.dialect.rules) {
         if (typeof rule.match === 'string') {
@@ -99,7 +156,7 @@ export class Converter {
         convertedString += token;
         if (this.isBootstrapLikeToken(token)) {
           unmappedTokens.push(token);
-        } else {
+        } else if (token.trim() !== '') {
           customTokens.push(token);
         }
       }

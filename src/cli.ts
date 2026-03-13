@@ -32,6 +32,7 @@ program
   .option('--write', 'write changes to files', false)
   .option('--diff', 'force diff output even when --write', false)
   .option('--backup', 'create .bak files when writing', false)
+  .option('--mode <utilities|fidelity|mixed>', 'conversion mode (utilities|fidelity|mixed)', 'mixed')
   .option('--components <file>', 'output CSS file with @apply rules (incremental migration mode)')
   .action(transformCommand);
 

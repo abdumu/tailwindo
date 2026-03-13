@@ -70,13 +70,17 @@ export const getBootstrap4Rules = (customColors?: Record<string, string>): RuleT
     // Grid
     { match: 'container', replace: ['container'] },
     { match: 'container-fluid', replace: ['w-full'] },
+    { match: /^container-(sm|md|lg|xl)$/, replace: (m) => [`container`, 'mx-auto', `max-w-screen-${m[1]}`] , confidence: 0.8 },
     { match: 'row', replace: ['flex', 'flex-wrap', '-mx-3'] },
+    { match: 'no-gutters', replace: ['mx-0', '[&>*]:px-0'] },
     { match: 'col', replace: ['flex-1', 'px-3'] },
     { match: /^col-(1|2|3|4|5|6|7|8|9|10|11|12)$/, replace: (m) => [`w-${m[1]}/12`, 'px-3'] , confidence: 0.8 },
     { match: /^col-(sm|md|lg|xl)-(1|2|3|4|5|6|7|8|9|10|11|12)$/, replace: (m) => [`${m[1]}:w-${m[2]}/12`, 'px-3'] , confidence: 0.8 },
     { match: /^col-(sm|md|lg|xl)$/, replace: (m) => [`${m[1]}:flex-1`, 'px-3'] , confidence: 0.8 },
     { match: /^col-auto$/, replace: ['w-auto', 'px-3'] , confidence: 0.8 },
     { match: /^col-(sm|md|lg|xl)-auto$/, replace: (m) => [`${m[1]}:w-auto`, 'px-3'] , confidence: 0.8 },
+    { match: /^offset-(1|2|3|4|5|6|7|8|9|10|11)$/, replace: (m) => [`ml-${m[1]}/12`] , confidence: 0.8 },
+    { match: /^offset-(sm|md|lg|xl)-(1|2|3|4|5|6|7|8|9|10|11)$/, replace: (m) => [`${m[1]}:ml-${m[2]}/12`] , confidence: 0.8 },
 
     // Buttons
     { match: 'btn', replace: ['inline-block', 'font-normal', 'text-center', 'whitespace-nowrap', 'align-middle', 'select-none', 'border', 'border-transparent', 'py-1.5', 'px-3', 'rounded', 'leading-normal', 'no-underline', 'transition-colors', 'duration-150'] },
@@ -108,9 +112,107 @@ export const getBootstrap4Rules = (customColors?: Record<string, string>): RuleT
     { match: 'text-decoration-none', replace: ['no-underline'] },
     { match: 'list-unstyled', replace: ['list-none', 'pl-0'] },
 
-    // Colors
+    // Borders & radius
+    { match: 'border', replace: ['border', 'border-solid', 'border-gray-200'] },
+    { match: 'border-0', replace: ['border-0'] },
+    { match: 'border-top', replace: ['border-t', 'border-gray-200'] },
+    { match: 'border-bottom', replace: ['border-b', 'border-gray-200'] },
+    { match: 'border-left', replace: ['border-l', 'border-gray-200'] },
+    { match: 'border-right', replace: ['border-r', 'border-gray-200'] },
+    { match: 'border-top-0', replace: ['border-t-0'] },
+    { match: 'border-bottom-0', replace: ['border-b-0'] },
+    { match: 'border-left-0', replace: ['border-l-0'] },
+    { match: 'border-right-0', replace: ['border-r-0'] },
+    { match: /^border-(primary|secondary|success|danger|warning|info|light|dark|white)$/, replace: (m) => [`border-${colors[m[1] as keyof typeof colors]}`], confidence: 0.8 },
+    { match: 'rounded', replace: ['rounded'] },
+    { match: 'rounded-0', replace: ['rounded-none'] },
+    { match: 'rounded-circle', replace: ['rounded-full'] },
+    { match: 'rounded-pill', replace: ['rounded-full'] },
+    { match: 'rounded-top', replace: ['rounded-t'] },
+    { match: 'rounded-bottom', replace: ['rounded-b'] },
+    { match: 'rounded-left', replace: ['rounded-l'] },
+    { match: 'rounded-right', replace: ['rounded-r'] },
+    { match: 'rounded-sm', replace: ['rounded-sm'] },
+    { match: 'rounded-lg', replace: ['rounded-lg'] },
+
+    // Sizing
+    { match: 'w-25', replace: ['w-1/4'] },
+    { match: 'w-50', replace: ['w-1/2'] },
+    { match: 'w-75', replace: ['w-3/4'] },
+    { match: 'w-100', replace: ['w-full'] },
+    { match: 'w-auto', replace: ['w-auto'] },
+    { match: 'h-25', replace: ['h-1/4'] },
+    { match: 'h-50', replace: ['h-1/2'] },
+    { match: 'h-75', replace: ['h-3/4'] },
+    { match: 'h-100', replace: ['h-full'] },
+    { match: 'h-auto', replace: ['h-auto'] },
+    { match: 'mw-100', replace: ['max-w-full'] },
+    { match: 'mh-100', replace: ['max-h-full'] },
+
+    // Positioning
+    { match: 'position-relative', replace: ['relative'] },
+    { match: 'position-absolute', replace: ['absolute'] },
+    { match: 'position-fixed', replace: ['fixed'] },
+    { match: 'position-sticky', replace: ['sticky'] },
+    { match: 'fixed-top', replace: ['fixed', 'top-0', 'inset-x-0', 'z-50'] },
+    { match: 'fixed-bottom', replace: ['fixed', 'bottom-0', 'inset-x-0', 'z-50'] },
+    { match: 'sticky-top', replace: ['sticky', 'top-0', 'z-50'] },
+
+    // Typography
+    { match: /^h([1-6])$/, replace: (m) => {
+        const sizes = { '1': '4xl', '2': '3xl', '3': '2xl', '4': 'xl', '5': 'lg', '6': 'base' };
+        return [`text-${sizes[m[1] as keyof typeof sizes]}`, 'font-medium', 'leading-tight', 'mt-0', 'mb-2'];
+    }, confidence: 0.8 },
+    { match: /^display-([1-4])$/, replace: (m) => {
+        const sizes = { '1': '6xl', '2': '5xl', '3': '4xl', '4': '3xl' };
+        return [`text-${sizes[m[1] as keyof typeof sizes]}`, 'font-light', 'leading-none'];
+    }, confidence: 0.8 },
+    { match: 'lead', replace: ['text-lg', 'font-light'] },
+    { match: 'small', replace: ['text-sm'] },
+    { match: 'text-wrap', replace: ['whitespace-normal'] },
+    { match: 'text-nowrap', replace: ['whitespace-nowrap'] },
+    { match: 'text-break', replace: ['break-words'] },
+    { match: 'text-truncate', replace: ['truncate'] },
+
+    // Visibility & overflow
+    { match: 'visible', replace: ['visible'] },
+    { match: 'invisible', replace: ['invisible'] },
+    { match: 'overflow-auto', replace: ['overflow-auto'] },
+    { match: 'overflow-hidden', replace: ['overflow-hidden'] },
+    { match: 'sr-only', replace: ['sr-only'] },
+    { match: 'sr-only-focusable', replace: ['focus:not-sr-only'] },
+
+    // Shadows
+    { match: 'shadow-none', replace: ['shadow-none'] },
+    { match: 'shadow-sm', replace: ['shadow-sm'] },
+    { match: 'shadow', replace: ['shadow'] },
+    { match: 'shadow-lg', replace: ['shadow-lg'] },
+
+    // Colors & Backgrounds
     { match: /^text-(primary|secondary|success|danger|warning|info|light|dark|white|muted)$/, replace: (m) => [`text-${colors[m[1] as keyof typeof colors]}`] , confidence: 0.8 },
-    { match: /^bg-(primary|secondary|success|danger|warning|info|light|dark|white|muted)$/, replace: (m) => [`bg-${colors[m[1] as keyof typeof colors]}`] , confidence: 0.8 },
+    { match: /^bg-(primary|secondary|success|danger|warning|info|light|dark|white|transparent)$/, replace: (m) => [`bg-${colors[m[1] as keyof typeof colors]}`] , confidence: 0.8 },
+    { match: 'bg-gradient', replace: ['bg-gradient-to-b', 'from-white/10', 'to-transparent'] },
+
+    // Flex
+    { match: 'flex-row', replace: ['flex-row'] },
+    { match: 'flex-column', replace: ['flex-col'] },
+    { match: 'flex-row-reverse', replace: ['flex-row-reverse'] },
+    { match: 'flex-column-reverse', replace: ['flex-col-reverse'] },
+    { match: 'flex-wrap', replace: ['flex-wrap'] },
+    { match: 'flex-nowrap', replace: ['flex-nowrap'] },
+    { match: 'flex-wrap-reverse', replace: ['flex-wrap-reverse'] },
+    { match: 'flex-fill', replace: ['flex-auto'] },
+    { match: /^flex-(sm|md|lg|xl)-(row|column|row-reverse|column-reverse|wrap|nowrap|wrap-reverse|fill)$/, replace: (m) => {
+      let f = m[2];
+      if (f === 'column') f = 'col';
+      if (f === 'column-reverse') f = 'col-reverse';
+      if (f === 'fill') f = 'auto';
+      return [`${m[1]}:flex-${f}`];
+    }, confidence: 0.8 },
+    { match: 'flex-grow-0', replace: ['grow-0'] },
+    { match: 'flex-grow-1', replace: ['grow'] },
+    { match: 'flex-shrink-0', replace: ['shrink-0'] },
+    { match: 'flex-shrink-1', replace: ['shrink'] },
 
     // spacing m, p
     {
