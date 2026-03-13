@@ -90,5 +90,22 @@ Exits `1` and prints the offending files if there are changes or unmapped tokens
 
 Dynamic bindings in React \`${expr}\` inside `className`, or `{{ ... }}` blocks in Blade are correctly skipped, preserving runtime behavior while converting the static literals surrounding them. For Vue, `:class` bindings support string literals specifically, skipping more complex expressions safely.
 
+## Testing & Fidelity
+
+Tailwindo includes a Playwright-based end-to-end fidelity test suite to ensure the converted output visually matches the original Bootstrap components.
+The tests generate Tailwind output, render both the Bootstrap and Tailwind versions, and compare bounding box geometries and a curated set of computed CSS properties (with defined tolerances).
+
+To run the UI fidelity tests locally:
+```bash
+npm run test:ui
+```
+
+If you wish to add a new fixture:
+1. Create a directory under `playwright/fixtures/`.
+2. Add an `input.html` file containing Bootstrap markup.
+3. Add `data-twtest="your-unique-id"` attributes to elements you want the test to compare.
+
+If your fixture triggers valid discrepancies due to current conversion limitations, add its folder name to `playwright/known-failures.json` to quarantine it while maintaining CI stability.
+
 ## Help Us
 - If you find unexpected conversion results, please create an issue or pull request.
