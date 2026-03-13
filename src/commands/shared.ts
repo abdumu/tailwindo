@@ -90,7 +90,7 @@ export function getFiles(pathStr: string, extensions: string, ignorePaths?: stri
   return globSync(pattern, { ignore: ignorePattern, absolute: true });
 }
 
-export function processFile(file: string, fromOption: DialectName): FileResult {
+export function processFile(file: string, fromOption: DialectName, componentsMode = false, extractedComponents?: Map<string, string[]>, mode: 'utilities' | 'fidelity' | 'mixed' = 'mixed'): FileResult {
   const content = fs.readFileSync(file, 'utf8');
   const ext = file.split('.').pop()?.toLowerCase();
 
@@ -100,7 +100,7 @@ export function processFile(file: string, fromOption: DialectName): FileResult {
   const dialectName = getDialect(resolvedFromOption, content);
 
   const dialect = getDialectWithConfig(resolvedFromOption, content, loadedConfig.colors);
-  const converter = new Converter(dialect, loadedConfig.prefix);
+  const converter = new Converter(dialect, loadedConfig.prefix, componentsMode, mode);
 
   let tokens: TokenRange[] = [];
 
@@ -139,6 +139,12 @@ export function processFile(file: string, fromOption: DialectName): FileResult {
 
     const classStr = token.value;
     const result = converter.convertClasses(classStr);
+
+    if (componentsMode && extractedComponents) {
+      for (const [key, value] of converter.extractedComponents.entries()) {
+        extractedComponents.set(key, value);
+      }
+    }
 
     // count tokens ignoring spacing
     const splitTokens = classStr.split(/\s+/).filter(t => t.trim() !== '');

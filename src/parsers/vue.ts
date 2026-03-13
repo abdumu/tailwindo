@@ -33,15 +33,42 @@ export function parseVueClasses(content: string): TokenRange[] {
           for (const prop of node.props || []) {
             if (prop.type === 7 && prop.name === 'bind' && prop.arg && prop.arg.content === 'class') {
               if (prop.exp && prop.exp.content) {
-                // To avoid offset corruption and fragile parsing of bound classes,
-                // we mark the entire :class expression as a dynamic token.
-                // This means it will be skipped during conversion, keeping the file safe.
-                tokens.push({
-                  start: prop.exp.loc.start.offset,
-                  end: prop.exp.loc.end.offset,
-                  value: prop.exp.content,
-                  type: 'dynamic'
-                });
+                const expContent = prop.exp.content;
+                const startOffset = prop.exp.loc.start.offset;
+                const endOffset = prop.exp.loc.end.offset;
+
+                // Try to find string literals inside the expression using regex.
+                // We only support simple object { 'd-none': true } or array ['d-flex', ...] forms for safety.
+                // Anything too complex is skipped.
+                // A safe regex to find string literals (single or double quotes) inside the expression.
+                const stringLiteralRegex = /(['"])(.*?)\1/g;
+                let match;
+                let foundAny = false;
+
+                while ((match = stringLiteralRegex.exec(expContent)) !== null) {
+                  const quote = match[1];
+                  const innerString = match[2];
+                  if (innerString.trim() !== '') {
+                    foundAny = true;
+                    const matchStart = match.index + 1; // skip the quote
+                    const matchEnd = matchStart + innerString.length;
+
+                    tokens.push({
+                      start: startOffset + matchStart,
+                      end: startOffset + matchEnd,
+                      value: innerString
+                    });
+                  }
+                }
+
+                if (!foundAny) {
+                   tokens.push({
+                     start: startOffset,
+                     end: endOffset,
+                     value: expContent,
+                     type: 'dynamic'
+                   });
+                }
               }
             }
           }
