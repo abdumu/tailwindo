@@ -3,3 +3,7 @@ dist/
 coverage/
 .DS_Store
 *.bak
+playwright/.artifacts/
+playwright/.generated/
+test-results/
+playwright-report/
