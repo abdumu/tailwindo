@@ -1,6 +1,7 @@
 export interface RuleType {
   match: string | RegExp;
   replace: string[] | ((matches: RegExpMatchArray) => string[]);
+  confidence?: number;
 }
 
 export interface Dialect {
@@ -11,8 +12,9 @@ export interface Dialect {
 export interface ConversionResult {
   original: string;
   converted: string;
-  mappedTokens: { from: string; to: string }[];
+  mappedTokens: { from: string; to: string; confidence: number }[];
   unmappedTokens: string[];
+  customTokens: string[];
 }
 
 export class Converter {
@@ -24,13 +26,34 @@ export class Converter {
     this.prefix = prefix;
   }
 
+  isBootstrapLikeToken(token: string): boolean {
+    if (token.includes(':')) return false;
+    if (this.prefix && token.startsWith(this.prefix)) return false;
+    if (token.startsWith('tw-')) return false;
+    if (token.includes('__') || token.includes('--')) return false; // BEM
+
+    const bsPatterns = [
+      /^(m|p)[trblxyse]?-\w+/, // spacing
+      /^d-\w+/, // display
+      /^(text|bg)-\w+/, // text/bg
+      /^(justify-content|align-items|align-self)-\w+/, // flex
+      /^(ms|me|ps|pe)-\w+/, // bs5 logical
+      /^(g|gx|gy)-\w+/, // gap
+      /^(fw|fst)-\w+/, // weights
+      /^(container|row|col|btn|alert|badge|card|form)(-|$)/ // grid/components
+    ];
+
+    return bsPatterns.some(pattern => pattern.test(token));
+  }
+
   convertClasses(classString: string): ConversionResult {
     // Regex to match tokens and the whitespace between them.
     // It captures both word/class tokens and whitespace tokens separately.
     const tokens = classString.split(/(\s+)/);
     let convertedString = '';
-    const mappedTokens: { from: string; to: string }[] = [];
+    const mappedTokens: { from: string; to: string; confidence: number }[] = [];
     const unmappedTokens: string[] = [];
+    const customTokens: string[] = [];
 
     for (const token of tokens) {
       if (!token) continue;
@@ -52,7 +75,7 @@ export class Converter {
 
             const joined = resultClasses.map(c => this.prefix + c).join(' ');
             convertedString += joined;
-            mappedTokens.push({ from: token, to: joined });
+            mappedTokens.push({ from: token, to: joined, confidence: rule.confidence ?? 1.0 });
             replaced = true;
             break;
           }
@@ -65,7 +88,7 @@ export class Converter {
 
             const joined = resultClasses.map(c => this.prefix + c).join(' ');
             convertedString += joined;
-            mappedTokens.push({ from: token, to: joined });
+            mappedTokens.push({ from: token, to: joined, confidence: rule.confidence ?? 0.8 });
             replaced = true;
             break;
           }
@@ -74,7 +97,11 @@ export class Converter {
 
       if (!replaced) {
         convertedString += token;
-        unmappedTokens.push(token);
+        if (this.isBootstrapLikeToken(token)) {
+          unmappedTokens.push(token);
+        } else {
+          customTokens.push(token);
+        }
       }
     }
 
@@ -82,7 +109,8 @@ export class Converter {
       original: classString,
       converted: convertedString,
       mappedTokens,
-      unmappedTokens
+      unmappedTokens,
+      customTokens
     };
   }
 }

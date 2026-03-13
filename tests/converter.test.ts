@@ -15,8 +15,9 @@ describe('Converter Engine', () => {
     const result = converter.convertClasses('d-none unknown d-none');
     expect(result.converted).toBe('hidden unknown hidden');
     expect(result.mappedTokens.length).toBe(2);
-    expect(result.unmappedTokens.length).toBe(1);
-    expect(result.unmappedTokens[0]).toBe('unknown');
+    expect(result.unmappedTokens.length).toBe(0);
+    expect(result.customTokens.length).toBe(1);
+    expect(result.customTokens[0]).toBe('unknown');
   });
 
   it('should handle whitespace preservation', () => {

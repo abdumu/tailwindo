@@ -38,22 +38,54 @@ export interface FileResult {
   mappedCount: number;
   unmappedCount: number;
   unmappedTokens: string[];
+  customTokens: string[];
   skippedDynamicCount: number;
   originalContent: string;
   transformedContent: string;
+  confidenceScore: number;
 }
 
-export function getFiles(pathStr: string, extensions: string, ignorePath?: string): string[] {
+export function getFiles(pathStr: string, extensions: string, ignorePaths?: string[]): string[] {
   const stat = fs.statSync(pathStr);
   if (stat.isFile()) {
     return [pathStr];
   }
 
   const exts = extensions.split(',').map(e => e.trim());
-  const pattern = `${pathStr}/**/*.{${exts.join(',')}}`;
 
-  const ignorePattern: string[] = ['**/node_modules/**'];
-  if (ignorePath) ignorePattern.push(ignorePath);
+  // glob brace expansion works differently if there's only 1 item
+  let pattern = '';
+  if (exts.length === 1) {
+    pattern = `${pathStr.replace(/\/$/, '')}/**/*.${exts[0]}`;
+  } else {
+    pattern = `${pathStr.replace(/\/$/, '')}/**/*.{${exts.join(',')}}`;
+  }
+
+  const ignorePattern: string[] = ['**/node_modules/**', '**/.git/**'];
+  if (ignorePaths) {
+    ignorePattern.push(...ignorePaths);
+  }
+
+  // Best effort loading of .gitignore
+  const gitignorePath = path.join(process.cwd(), '.gitignore');
+  if (fs.existsSync(gitignorePath)) {
+    try {
+      const gitignore = fs.readFileSync(gitignorePath, 'utf8');
+      const lines = gitignore.split('\n').map(l => l.trim()).filter(l => l && !l.startsWith('#'));
+      lines.forEach(line => {
+        let pattern = line;
+        if (pattern.startsWith('/')) pattern = pattern.substring(1);
+        if (!pattern.includes('*')) {
+          ignorePattern.push(`**/${pattern}/**`);
+          ignorePattern.push(`**/${pattern}`);
+        } else {
+          ignorePattern.push(`**/${pattern}`);
+        }
+      });
+    } catch (e) {
+      // ignore
+    }
+  }
 
   return globSync(pattern, { ignore: ignorePattern, absolute: true });
 }
@@ -94,7 +126,10 @@ export function processFile(file: string, fromOption: DialectName): FileResult {
   let mappedCount = 0;
   let unmappedCount = 0;
   let skippedDynamicCount = 0;
+  let totalConfidence = 0;
+  let totalConvertedTokens = 0;
   const unmappedTokensSet = new Set<string>();
+  const customTokensSet = new Set<string>();
 
   for (const token of tokens) {
     if (token.type === 'dynamic') {
@@ -111,13 +146,26 @@ export function processFile(file: string, fromOption: DialectName): FileResult {
 
     mappedCount += result.mappedTokens.length;
     unmappedCount += result.unmappedTokens.length;
+
     result.unmappedTokens.forEach(t => unmappedTokensSet.add(t));
+    if (result.customTokens) {
+      result.customTokens.forEach(t => customTokensSet.add(t));
+    }
+
+    if (result.mappedTokens.length > 0) {
+      for (const mappedToken of result.mappedTokens) {
+        totalConfidence += mappedToken.confidence;
+        totalConvertedTokens++;
+      }
+    }
 
     // apply string replacement
     transformedContent = transformedContent.substring(0, token.start)
                        + result.converted
                        + transformedContent.substring(token.end);
   }
+
+  const confidenceScore = totalConvertedTokens > 0 ? (totalConfidence / totalConvertedTokens) : 1.0;
 
   return {
     file,
@@ -126,8 +174,10 @@ export function processFile(file: string, fromOption: DialectName): FileResult {
     mappedCount,
     unmappedCount,
     unmappedTokens: Array.from(unmappedTokensSet),
+    customTokens: Array.from(customTokensSet),
     skippedDynamicCount,
     originalContent: content,
-    transformedContent
+    transformedContent,
+    confidenceScore
   };
 }

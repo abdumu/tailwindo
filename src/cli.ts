@@ -19,7 +19,7 @@ program
   .option('--from <dialect>', 'bootstrap dialect (bootstrap4|bootstrap5|auto)', 'auto')
   .option('--extensions <csv>', 'comma separated extensions to scan', 'html,js,jsx,ts,tsx,vue,svelte,php,blade.php,twig,erb')
   .option('--format <format>', 'output format (pretty|json)', 'pretty')
-  .option('--ignore <path>', 'path to ignore')
+  .option('--ignore <paths>', 'comma separated paths to ignore')
   .action(scanCommand);
 
 program
@@ -28,6 +28,7 @@ program
   .argument('<path>', 'path to transform')
   .option('--from <dialect>', 'bootstrap dialect (bootstrap4|bootstrap5|auto)', 'auto')
   .option('--extensions <csv>', 'comma separated extensions to scan', 'html,js,jsx,ts,tsx,vue,svelte,php,blade.php,twig,erb')
+  .option('--ignore <paths>', 'comma separated paths to ignore')
   .option('--write', 'write changes to files', false)
   .option('--diff', 'force diff output even when --write', false)
   .option('--backup', 'create .bak files when writing', false)
@@ -40,7 +41,7 @@ program
   .argument('<path>', 'path to check')
   .option('--from <dialect>', 'bootstrap dialect (bootstrap4|bootstrap5|auto)', 'auto')
   .option('--extensions <csv>', 'comma separated extensions to scan', 'html,js,jsx,ts,tsx,vue,svelte,php,blade.php,twig,erb')
-  .option('--ignore <path>', 'path to ignore')
+  .option('--ignore <paths>', 'comma separated paths to ignore')
   .action(checkCommand);
 
 program.parse(process.argv);

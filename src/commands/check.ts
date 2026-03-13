@@ -9,7 +9,8 @@ interface CheckOptions {
 }
 
 export function checkCommand(path: string, options: CheckOptions) {
-  const files = getFiles(path, options.extensions, options.ignore);
+  const ignorePaths = options.ignore ? options.ignore.split(',').map(s => s.trim()) : undefined;
+  const files = getFiles(path, options.extensions, ignorePaths);
 
   let hasChanges = false;
   let hasUnmapped = false;
@@ -20,9 +21,11 @@ export function checkCommand(path: string, options: CheckOptions) {
       hasChanges = true;
       console.error(chalk.red(`File would be changed: ${file}`));
     }
-    if (r.unmappedCount > 0) {
+    // We only fail check if there are strictly unmapped BOOTSTRAP-like tokens.
+    // Custom non-bootstrap tokens (e.g., custom BEM classes) do not trigger failures.
+    if (r.unmappedTokens.length > 0) {
       hasUnmapped = true;
-      console.error(chalk.yellow(`File has unmapped classes: ${file} (${r.unmappedTokens.slice(0, 5).join(', ')}...)`));
+      console.error(chalk.yellow(`File has unmapped bootstrap classes: ${file} (${r.unmappedTokens.slice(0, 5).join(', ')}...)`));
     }
   }
 
