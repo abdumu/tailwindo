@@ -128,6 +128,170 @@ export const contextualRules: ContextRule[] = [
     },
     confidence: 0.9,
   },
+  // Bulma Buttons
+  {
+    name: 'bulma-button',
+    appliesToDialects: ['bulma'] as any[], // cast because types might need update if strict
+    match: (tokens) => tokens.includes('button'),
+    transform: (tokens) => {
+      let newTokens = [...tokens];
+      const mapped: { from: string[]; to: string[]; confidence: number }[] = [];
+      const colors = {
+          primary: 'teal-500',
+          link: 'blue-500',
+          info: 'cyan-500',
+          success: 'green-500',
+          warning: 'yellow-500',
+          danger: 'red-500',
+          light: 'gray-100',
+          dark: 'gray-800'
+      };
+
+      newTokens = remove(newTokens, ['button']);
+      mapped.push({ from: ['button'], to: ['inline-flex', 'items-center', 'justify-center', 'px-4', 'py-2', 'border', 'rounded', 'leading-none', 'focus:outline-none', 'transition-colors'], confidence: 0.9 });
+
+      for (const variant of Object.keys(colors)) {
+        if (newTokens.includes(`is-${variant}`)) {
+          newTokens = remove(newTokens, [`is-${variant}`]);
+          const c = colors[variant as keyof typeof colors];
+          const textC = ['warning', 'light'].includes(variant) ? 'text-gray-900' : 'text-white';
+
+          if (newTokens.includes('is-outlined')) {
+             newTokens = remove(newTokens, ['is-outlined']);
+             mapped.push({ from: [`is-${variant}`, 'is-outlined'], to: [`border-${c}`, `text-${c}`, 'bg-transparent', `hover:bg-${c}`, 'hover:text-white'], confidence: 0.9 });
+          } else {
+             mapped.push({ from: [`is-${variant}`], to: [`bg-${c}`, `border-${c}`, textC], confidence: 0.9 });
+          }
+        }
+      }
+
+      if (newTokens.includes('is-small')) {
+          newTokens = remove(newTokens, ['is-small']);
+          mapped.push({ from: ['is-small'], to: ['text-sm', 'px-3', 'py-1'], confidence: 0.9 });
+      }
+      if (newTokens.includes('is-medium')) {
+          newTokens = remove(newTokens, ['is-medium']);
+          mapped.push({ from: ['is-medium'], to: ['text-lg', 'px-5', 'py-2.5'], confidence: 0.9 });
+      }
+      if (newTokens.includes('is-large')) {
+          newTokens = remove(newTokens, ['is-large']);
+          mapped.push({ from: ['is-large'], to: ['text-xl', 'px-6', 'py-3'], confidence: 0.9 });
+      }
+
+      const allToTokens = mapped.flatMap((m) => m.to);
+      return { tokens: [...newTokens, ...allToTokens], mapped };
+    },
+    confidence: 0.9,
+  },
+  // Bulma Columns Wrappers
+  {
+    name: 'bulma-columns-wrapper',
+    appliesToDialects: ['bulma'] as any[],
+    match: (tokens) => tokens.includes('columns'),
+    transform: (tokens) => {
+      let newTokens = [...tokens];
+      const mapped: { from: string[]; to: string[]; confidence: number }[] = [];
+
+      newTokens = remove(newTokens, ['columns']);
+      mapped.push({ from: ['columns'], to: ['flex', 'flex-wrap', '-mx-3'], confidence: 0.9 });
+
+      const allToTokens = mapped.flatMap((m) => m.to);
+      return { tokens: [...newTokens, ...allToTokens], mapped };
+    },
+    confidence: 0.9,
+  },
+  // Bulma Column Item
+  {
+    name: 'bulma-column',
+    appliesToDialects: ['bulma'] as any[],
+    match: (tokens) => tokens.includes('column'),
+    transform: (tokens) => {
+      let newTokens = [...tokens];
+      const mapped: { from: string[]; to: string[]; confidence: number }[] = [];
+
+      newTokens = remove(newTokens, ['column']);
+
+      const widthMap: Record<string, string> = {
+          'is-half': 'w-1/2',
+          'is-one-third': 'w-1/3',
+          'is-two-thirds': 'w-2/3',
+          'is-one-quarter': 'w-1/4',
+          'is-three-quarters': 'w-3/4',
+          'is-full': 'w-full'
+      };
+
+      let widthAdded = false;
+      for (const [bulmaCls, twCls] of Object.entries(widthMap)) {
+          if (newTokens.includes(bulmaCls)) {
+              newTokens = remove(newTokens, [bulmaCls]);
+              mapped.push({ from: ['column', bulmaCls], to: [twCls, 'px-3'], confidence: 0.9 });
+              widthAdded = true;
+          }
+      }
+
+      if (!widthAdded) {
+          mapped.push({ from: ['column'], to: ['flex-1', 'px-3'], confidence: 0.9 });
+      }
+
+      const allToTokens = mapped.flatMap((m) => m.to);
+      return { tokens: [...newTokens, ...allToTokens], mapped };
+    },
+    confidence: 0.9,
+  },
+  // Foundation Grid Wrapper
+  {
+    name: 'foundation-grid-x',
+    appliesToDialects: ['foundation'] as any[],
+    match: (tokens) => tokens.includes('grid-x'),
+    transform: (tokens) => {
+      let newTokens = [...tokens];
+      const mapped: { from: string[]; to: string[]; confidence: number }[] = [];
+
+      newTokens = remove(newTokens, ['grid-x']);
+      mapped.push({ from: ['grid-x'], to: ['flex', 'flex-wrap'], confidence: 0.9 });
+
+      const allToTokens = mapped.flatMap((m) => m.to);
+      return { tokens: [...newTokens, ...allToTokens], mapped };
+    },
+    confidence: 0.9,
+  },
+  // Foundation Cell Item
+  {
+    name: 'foundation-cell',
+    appliesToDialects: ['foundation'] as any[],
+    match: (tokens) => tokens.includes('cell'),
+    transform: (tokens) => {
+      let newTokens = [...tokens];
+      const mapped: { from: string[]; to: string[]; confidence: number }[] = [];
+
+      newTokens = remove(newTokens, ['cell']);
+
+      let widthAdded = false;
+
+      const sizes = ['small', 'medium', 'large'];
+      const fractions = Array.from({length: 12}, (_, i) => i + 1);
+
+      for (const size of sizes) {
+          const bp = size === 'small' ? 'sm' : (size === 'medium' ? 'md' : 'lg');
+          for (const num of fractions) {
+              const fCls = `${size}-${num}`;
+              if (newTokens.includes(fCls)) {
+                  newTokens = remove(newTokens, [fCls]);
+                  mapped.push({ from: ['cell', fCls], to: [`${bp}:w-${num}/12`, 'min-w-0'], confidence: 0.9 });
+                  widthAdded = true;
+              }
+          }
+      }
+
+      if (!widthAdded) {
+          mapped.push({ from: ['cell'], to: ['flex-1', 'min-w-0'], confidence: 0.9 });
+      }
+
+      const allToTokens = mapped.flatMap((m) => m.to);
+      return { tokens: [...newTokens, ...allToTokens], mapped };
+    },
+    confidence: 0.9,
+  },
   // Alerts
   {
     name: 'alert',

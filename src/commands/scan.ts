@@ -56,7 +56,7 @@ export function scanCommand(path: string, options: ScanOptions) {
   console.log(`Files scanned: ${totalFiles}`);
   console.log(`Total class tokens: ${totalTokens}`);
   console.log(`Mapped tokens: ${chalk.green(totalMapped)}`);
-  console.log(`Unmapped bootstrap tokens: ${chalk.red(totalUnmapped)}`);
+  console.log(`Unmapped framework tokens: ${chalk.red(totalUnmapped)}`);
   if (totalSkippedDynamic > 0) {
     console.log(`Skipped dynamic regions: ${chalk.yellow(totalSkippedDynamic)}`);
   }
@@ -64,7 +64,7 @@ export function scanCommand(path: string, options: ScanOptions) {
   console.log('');
 
   if (totalUnmapped > 0) {
-    console.log(chalk.bold('Unmapped bootstrap classes (sample):'));
+    console.log(chalk.bold('Unmapped framework classes (sample):'));
     const allUnmapped = new Set<string>();
     results.forEach(r => r.unmappedTokens.forEach(t => allUnmapped.add(t)));
     console.log(Array.from(allUnmapped).slice(0, 50).join(', ') + (allUnmapped.size > 50 ? '...' : ''));

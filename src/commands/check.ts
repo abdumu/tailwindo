@@ -23,16 +23,16 @@ export function checkCommand(path: string, options: CheckOptions) {
       hasChanges = true;
       console.error(chalk.red(`File would be changed: ${file}`));
     }
-    // We only fail check if there are strictly unmapped BOOTSTRAP-like tokens.
-    // Custom non-bootstrap tokens (e.g., custom BEM classes) do not trigger failures.
+    // We only fail check if there are strictly unmapped framework-like tokens.
+    // Custom non-framework tokens (e.g., custom BEM classes) do not trigger failures.
     if (r.unmappedTokens.length > 0) {
       hasUnmapped = true;
-      console.error(chalk.yellow(`File has unmapped bootstrap classes: ${file} (${r.unmappedTokens.slice(0, 5).join(', ')}...)`));
+      console.error(chalk.yellow(`File has unmapped framework classes: ${file} (${r.unmappedTokens.slice(0, 5).join(', ')}...)`));
     }
   }
 
   if (hasChanges || hasUnmapped) {
-    console.error(chalk.red.bold('\nCheck failed! Files are either not fully mapped or have pending changes.'));
+    console.error(chalk.red.bold('\nCheck failed! Files are either not fully mapped or have unmapped framework tokens.'));
     process.exit(1);
   }
 

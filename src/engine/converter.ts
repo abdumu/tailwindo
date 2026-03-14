@@ -34,13 +34,14 @@ export class Converter {
     this.extractedComponents = new Map();
   }
 
-  isBootstrapLikeToken(token: string): boolean {
+  isFrameworkLikeToken(token: string): boolean {
     if (token.includes(':')) return false;
     if (this.prefix && token.startsWith(this.prefix)) return false;
     if (token.startsWith('tw-')) return false;
     if (token.includes('__') || token.includes('--')) return false; // BEM
 
-    const bsPatterns = [
+    const patterns = [
+      // Bootstrap
       /^(m|p)[trblxyse]?-(0|1|2|3|4|5|auto)$/, // spacing
       /^d-\w+/, // display
       /^(text|bg)-\w+/, // text/bg
@@ -48,10 +49,21 @@ export class Converter {
       /^(ms|me|ps|pe)-(0|1|2|3|4|5|auto)$/, // bs5 logical
       /^(g|gx|gy)-(0|1|2|3|4|5)$/, // gap
       /^(fw|fst)-\w+/, // weights
-      /^(container|row|col|btn|alert|badge|card|form)(-|$)/ // grid/components
+      /^(container|row|col|btn|alert|badge|card|form)(-|$)/, // grid/components
+
+      // Bulma
+      /^(is|has)-/, // modifiers
+      /^(columns|column|section|hero|navbar|notification|message|box|field|control|input|textarea|select|label|help)$/, // components
+
+      // Foundation
+      /^grid-[xy]/, // grid
+      /^cell$/, // grid cell
+      /^(small|medium|large)-\d+/, // sizing
+      /^(show-for|hide-for)-/, // visibility
+      /^(callout|top-bar|menu)$/ // components
     ];
 
-    return bsPatterns.some(pattern => pattern.test(token));
+    return patterns.some(pattern => pattern.test(token));
   }
 
   convertClasses(classString: string): ConversionResult {
@@ -154,7 +166,7 @@ export class Converter {
 
       if (!replaced) {
         convertedString += token;
-        if (this.isBootstrapLikeToken(token)) {
+        if (this.isFrameworkLikeToken(token)) {
           unmappedTokens.push(token);
         } else if (token.trim() !== '') {
           customTokens.push(token);

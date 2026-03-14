@@ -62,7 +62,12 @@ export interface ComparisonDiff {
   layout: string[];
 }
 
-export function compareMetrics(bs: ElementMetrics, tw: ElementMetrics): ComparisonDiff {
+// Specific overrides table keyed by fixture name -> property -> tolerance
+const FIXTURE_OVERRIDES: Record<string, Record<string, number>> = {
+  // Example: 'grid': { 'marginRight': 6 }
+};
+
+export function compareMetrics(bs: ElementMetrics, tw: ElementMetrics, fixtureName: string = ''): ComparisonDiff {
   const diff: ComparisonDiff = {
     geometry: [],
     spacing: [],
@@ -74,9 +79,12 @@ export function compareMetrics(bs: ElementMetrics, tw: ElementMetrics): Comparis
   };
   const GEOMETRY_TOLERANCE_PX = 2;
 
+  const overrides = FIXTURE_OVERRIDES[fixtureName] || {};
+
   // Compare Bounding Box
   for (const key of ['x', 'y', 'width', 'height'] as const) {
-    if (Math.abs(bs.boundingBox[key] - tw.boundingBox[key]) > GEOMETRY_TOLERANCE_PX) {
+    const tolerance = overrides[key] !== undefined ? overrides[key] : GEOMETRY_TOLERANCE_PX;
+    if (Math.abs(bs.boundingBox[key] - tw.boundingBox[key]) > tolerance) {
       diff.geometry.push(`Bounding Box [${key}]: expected ~${bs.boundingBox[key]}, got ${tw.boundingBox[key]}`);
     }
   }
@@ -105,9 +113,8 @@ export function compareMetrics(bs: ElementMetrics, tw: ElementMetrics): Comparis
     else if (prop === 'boxShadow') category = 'effects';
     else if (['display', 'position', 'justifyContent', 'alignItems', 'gap', 'flexDirection', 'flexWrap'].includes(prop)) category = 'layout';
 
-    // Set wider tolerance for spacing properties
-    const isSpacingProp = category === 'spacing';
-    const styleTolerance = isSpacingProp ? 6 : GEOMETRY_TOLERANCE_PX;
+    // Strict default tolerance
+    const styleTolerance = overrides[prop] !== undefined ? overrides[prop] : GEOMETRY_TOLERANCE_PX;
 
     if (bsNum !== null && twNum !== null && (bsVal.endsWith('px') || bsVal.endsWith('rem') || bsVal.endsWith('em') || !isNaN(bsNum)) && (twVal.endsWith('px') || twVal.endsWith('rem') || twVal.endsWith('em') || !isNaN(twNum))) {
       if (Math.abs(bsNum - twNum) > styleTolerance) {
