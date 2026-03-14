@@ -1,0 +1,9 @@
+--- Scan Summary ---
+Files scanned: 1
+Total class tokens: 33
+Mapped tokens: 22
+Unmapped framework tokens: 11
+Average confidence: 90.5%
+
+Unmapped framework classes (sample):
+mt-3, has-text-grey, card-content, mt-4, has-text-light, mt-2, has-text-white, has-background-primary, p-5, is-vcentered

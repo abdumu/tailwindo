@@ -6,12 +6,10 @@ async function loadFixture() {
 
   if (!fixture) return;
 
-  if (type === 'bootstrap' || type === 'framework') {
-    const link = document.createElement('link');
-    link.rel = 'stylesheet';
-    link.href = `../vendor/${framework}.min.css`;
-    document.head.appendChild(link);
-  }
+  const link = document.createElement('link');
+  link.rel = 'stylesheet';
+  link.href = `../vendor/${framework}.min.css`;
+  document.head.appendChild(link);
 
   const basePath = (type === 'bootstrap' || type === 'framework') ? '../fixtures' : '../.generated';
   const fileName = (type === 'bootstrap' || type === 'framework') ? 'input.html' : 'tailwind.html';

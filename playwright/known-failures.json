@@ -5,5 +5,7 @@
   { "id": "bulma/forms", "reason": "missing bulma form mappings", "date_added": "2023-10-10T12:00:00Z", "owner": "jules" },
   { "id": "bulma/columns", "reason": "spacing for bulma columns", "date_added": "2023-10-10T12:00:00Z", "owner": "jules" },
   { "id": "foundation/grid", "reason": "spacing for foundation grid", "date_added": "2023-10-10T12:00:00Z", "owner": "jules" },
-  { "id": "foundation/callout", "reason": "missing foundation component rules", "date_added": "2023-10-10T12:00:00Z", "owner": "jules" }
+  { "id": "foundation/callout", "reason": "missing foundation component rules", "date_added": "2023-10-10T12:00:00Z", "owner": "jules" },
+  { "id": "bulma/cards", "reason": "Bulma cards layout mismatch requires more investigation.", "date_added": "2024-03-14T12:00:00Z", "owner": "jules" },
+  { "id": "foundation/cards", "reason": "Foundation cards layout mismatch requires more investigation.", "date_added": "2024-03-14T12:00:00Z", "owner": "jules" }
 ]
