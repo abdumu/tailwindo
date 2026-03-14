@@ -1,4 +1,4 @@
 @import "tailwindcss" prefix(tw);
-@config "./tailwind.config.cjs";
 @source "../.generated/**/*.html";
-@source "../.generated/**/*.css";
+@source "../site/**/*.html";
+@source "../site/**/*.js";
