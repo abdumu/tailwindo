@@ -1,4 +1,9 @@
 [
+  { "id": "forms", "reason": "spacing mappings for bootstrap", "date_added": "2023-10-10T12:00:00Z", "owner": "jules" },
+  { "id": "grid", "reason": "spacing mappings for bootstrap", "date_added": "2023-10-10T12:00:00Z", "owner": "jules" },
+  { "id": "bulma/buttons", "reason": "missing bulma contextual mappings", "date_added": "2023-10-10T12:00:00Z", "owner": "jules" },
+  { "id": "bulma/forms", "reason": "missing bulma form mappings", "date_added": "2023-10-10T12:00:00Z", "owner": "jules" },
   { "id": "bulma/columns", "reason": "spacing for bulma columns", "date_added": "2023-10-10T12:00:00Z", "owner": "jules" },
+  { "id": "foundation/grid", "reason": "spacing for foundation grid", "date_added": "2023-10-10T12:00:00Z", "owner": "jules" },
   { "id": "foundation/callout", "reason": "missing foundation component rules", "date_added": "2023-10-10T12:00:00Z", "owner": "jules" }
 ]
