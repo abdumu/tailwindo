@@ -41,12 +41,12 @@ export class Converter {
     if (token.includes('__') || token.includes('--')) return false; // BEM
 
     const bsPatterns = [
-      /^(m|p)[trblxyse]?-\w+/, // spacing
+      /^(m|p)[trblxyse]?-(0|1|2|3|4|5|auto)$/, // spacing
       /^d-\w+/, // display
       /^(text|bg)-\w+/, // text/bg
       /^(justify-content|align-items|align-self)-\w+/, // flex
-      /^(ms|me|ps|pe)-\w+/, // bs5 logical
-      /^(g|gx|gy)-\w+/, // gap
+      /^(ms|me|ps|pe)-(0|1|2|3|4|5|auto)$/, // bs5 logical
+      /^(g|gx|gy)-(0|1|2|3|4|5)$/, // gap
       /^(fw|fst)-\w+/, // weights
       /^(container|row|col|btn|alert|badge|card|form)(-|$)/ // grid/components
     ];
@@ -57,7 +57,7 @@ export class Converter {
   convertClasses(classString: string): ConversionResult {
     // Regex to match tokens and the whitespace between them.
     // It captures both word/class tokens and whitespace tokens separately.
-    let tokens = classString.split(/(\s+)/);
+    const tokens = classString.split(/(\s+)/);
     let convertedString = '';
     const mappedTokens: { from: string; to: string; confidence: number }[] = [];
     const unmappedTokens: string[] = [];

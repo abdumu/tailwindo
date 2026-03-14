@@ -4,9 +4,9 @@ const spacings = {
   '0': '0',
   '1': '1',
   '2': '2',
-  '3': '4',
-  '4': '6',
-  '5': '12',
+  '3': '4', // In tailwind v4, spacing 4 is 1rem (16px), matching bs spacer 3
+  '4': '6', // bs 4 is 1.5rem (24px)
+  '5': '12', // bs 5 is 3rem (48px)
   'auto': 'auto'
 };
 
@@ -76,9 +76,9 @@ export const getBootstrap5Rules = (customColors?: Record<string, string>): RuleT
 
 
     // Grid
-    { match: 'container', replace: ['container', 'mx-auto'] },
-    { match: 'container-fluid', replace: ['w-full'] },
-    { match: /^container-(sm|md|lg|xl|xxl)$/, replace: (m) => [`container`, 'mx-auto', `max-w-screen-${m[1]}`] , confidence: 0.8 },
+    { match: 'container', replace: ['container', 'mx-auto', 'px-3'] },
+    { match: 'container-fluid', replace: ['w-full', 'px-3'] },
+    { match: /^container-(sm|md|lg|xl|xxl)$/, replace: (m) => [`container`, 'mx-auto', `max-w-screen-${m[1]}`, 'px-3'] , confidence: 0.8 },
     { match: 'row', replace: ['flex', 'flex-wrap', '-mx-3'] },
     { match: 'col', replace: ['flex-1', 'px-3'] },
     { match: /^col-(1|2|3|4|5|6|7|8|9|10|11|12)$/, replace: (m) => [`w-${m[1]}/12`, 'px-3'] , confidence: 0.8 },

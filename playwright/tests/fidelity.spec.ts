@@ -13,12 +13,36 @@ const KNOWN_FAILURES_FILE = path.resolve(__dirname, '../known-failures.json');
 
 let knownFailures: string[] = [];
 if (fs.existsSync(KNOWN_FAILURES_FILE)) {
-  knownFailures = JSON.parse(fs.readFileSync(KNOWN_FAILURES_FILE, 'utf-8'));
+  const parsed = JSON.parse(fs.readFileSync(KNOWN_FAILURES_FILE, 'utf-8'));
+  knownFailures = parsed.map((f: any) => f.fixture || f);
 }
 
 const fixtures = fs.readdirSync(FIXTURES_DIR).filter(f => fs.statSync(path.join(FIXTURES_DIR, f)).isDirectory());
 
 test.describe('Fidelity Tests', () => {
+  const summary = {
+    passed: 0,
+    failed: 0,
+    quarantined: 0,
+    propertyMismatches: {} as Record<string, number>
+  };
+
+  test.afterAll(() => {
+    console.log('\n--- Fidelity Test Summary ---');
+    console.log(`Passed: ${summary.passed}`);
+    console.log(`Failed: ${summary.failed}`);
+    console.log(`Quarantined: ${summary.quarantined}`);
+
+    console.log('\nTop 10 Mismatched Properties:');
+    const sortedProps = Object.entries(summary.propertyMismatches)
+      .sort((a, b) => b[1] - a[1])
+      .slice(0, 10);
+    for (const [prop, count] of sortedProps) {
+      console.log(`- ${prop}: ${count}`);
+    }
+    console.log('-----------------------------\n');
+  });
+
   for (const fixture of fixtures) {
     test(`Bootstrap vs Tailwind output matches for ${fixture}`, async ({ browser }) => {
       const bsContext = await browser.newContext();
@@ -42,7 +66,7 @@ test.describe('Fidelity Tests', () => {
       const elements = await bsPage.locator('[data-twtest]').all();
 
       let failed = false;
-      const allErrors: Record<string, string[]> = {};
+      const allErrors: Record<string, ReturnType<typeof compareMetrics>> = {};
 
       for (let i = 0; i < elements.length; i++) {
         const bsLocator = elements[i];
@@ -58,8 +82,9 @@ test.describe('Fidelity Tests', () => {
         const twMetrics = await getElementMetrics(twPage, twLocator);
 
         const diff = compareMetrics(bsMetrics, twMetrics);
+        const hasErrors = Object.values(diff).some(arr => arr.length > 0);
 
-        if (diff.length > 0) {
+        if (hasErrors) {
           failed = true;
           allErrors[id] = diff;
 
@@ -80,12 +105,24 @@ test.describe('Fidelity Tests', () => {
       const isKnownFailure = knownFailures.includes(fixture);
 
       if (isKnownFailure) {
-        // If it's a known failure but the idempotency check passes, and metrics accidentally pass, it might be flaky or "fixed".
-        // But since we use known-failures to tolerate idempotency drift too, we just assert `true` or accept it to not block.
-        if (!failed) {
-            console.warn(`Fixture '${fixture}' passed metrics check, but is in known-failures.json. It may still be failing idempotency. Let it pass.`);
-        }
+        summary.quarantined++;
+        expect(failed, `Fixture '${fixture}' is quarantined in known-failures.json but passed the fidelity test! Please remove it from known-failures.json.`).toBe(true);
       } else {
+        if (failed) {
+          summary.failed++;
+          for (const id of Object.keys(allErrors)) {
+            const diff = allErrors[id];
+            for (const category of Object.values(diff)) {
+              for (const errorStr of category) {
+                 const match = errorStr.match(/^\[(.*?)\]/);
+                 const prop = match ? match[1] : errorStr.split(':')[0];
+                 summary.propertyMismatches[prop] = (summary.propertyMismatches[prop] || 0) + 1;
+              }
+            }
+          }
+        } else {
+          summary.passed++;
+        }
         expect(failed, `Visual or computed property mismatch detected. Check artifacts for more info.`).toBe(false);
       }
     });

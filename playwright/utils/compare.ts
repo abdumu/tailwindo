@@ -52,14 +52,32 @@ function extractNumber(val: string): number | null {
   return null;
 }
 
-export function compareMetrics(bs: ElementMetrics, tw: ElementMetrics): string[] {
-  const errors: string[] = [];
+export interface ComparisonDiff {
+  geometry: string[];
+  spacing: string[];
+  typography: string[];
+  colors: string[];
+  borders: string[];
+  effects: string[];
+  layout: string[];
+}
+
+export function compareMetrics(bs: ElementMetrics, tw: ElementMetrics): ComparisonDiff {
+  const diff: ComparisonDiff = {
+    geometry: [],
+    spacing: [],
+    typography: [],
+    colors: [],
+    borders: [],
+    effects: [],
+    layout: [],
+  };
   const GEOMETRY_TOLERANCE_PX = 2;
 
   // Compare Bounding Box
   for (const key of ['x', 'y', 'width', 'height'] as const) {
     if (Math.abs(bs.boundingBox[key] - tw.boundingBox[key]) > GEOMETRY_TOLERANCE_PX) {
-      errors.push(`Bounding Box [${key}]: expected ~${bs.boundingBox[key]}, got ${tw.boundingBox[key]}`);
+      diff.geometry.push(`Bounding Box [${key}]: expected ~${bs.boundingBox[key]}, got ${tw.boundingBox[key]}`);
     }
   }
 
@@ -79,30 +97,38 @@ export function compareMetrics(bs: ElementMetrics, tw: ElementMetrics): string[]
       continue;
     }
 
+    let category: keyof ComparisonDiff = 'layout';
+    if (prop.startsWith('margin') || prop.startsWith('padding')) category = 'spacing';
+    else if (prop.startsWith('font') || prop === 'lineHeight') category = 'typography';
+    else if (prop.toLowerCase().includes('color')) category = 'colors';
+    else if (prop.startsWith('border')) category = 'borders';
+    else if (prop === 'boxShadow') category = 'effects';
+    else if (['display', 'position', 'justifyContent', 'alignItems', 'gap', 'flexDirection', 'flexWrap'].includes(prop)) category = 'layout';
+
     // Set wider tolerance for spacing properties
-    const isSpacingProp = prop.startsWith('margin') || prop.startsWith('padding');
+    const isSpacingProp = category === 'spacing';
     const styleTolerance = isSpacingProp ? 6 : GEOMETRY_TOLERANCE_PX;
 
     if (bsNum !== null && twNum !== null && (bsVal.endsWith('px') || bsVal.endsWith('rem') || bsVal.endsWith('em') || !isNaN(bsNum)) && (twVal.endsWith('px') || twVal.endsWith('rem') || twVal.endsWith('em') || !isNaN(twNum))) {
       if (Math.abs(bsNum - twNum) > styleTolerance) {
-        errors.push(`Style [${prop}]: expected ~${bsVal}, got ${twVal}`);
+        diff[category].push(`Style [${prop}]: expected ~${bsVal}, got ${twVal}`);
       }
     } else if (prop === 'boxShadow') {
       const hasBsShadow = bsVal !== 'none' && bsVal !== '';
       const hasTwShadow = twVal !== 'none' && twVal !== '';
       if (hasBsShadow !== hasTwShadow) {
-        errors.push(`Style [${prop}]: expected ${bsVal}, got ${twVal}`);
+        diff[category].push(`Style [${prop}]: expected ${bsVal}, got ${twVal}`);
       }
     } else if (prop === 'lineHeight') {
       if (bsNum !== null && twNum !== null) {
         if (Math.abs(bsNum - twNum) > styleTolerance) {
-          errors.push(`Style [${prop}]: expected ~${bsVal}, got ${twVal}`);
+          diff[category].push(`Style [${prop}]: expected ~${bsVal}, got ${twVal}`);
         }
       }
     } else {
-      errors.push(`Style [${prop}]: expected ${bsVal}, got ${twVal}`);
+      diff[category].push(`Style [${prop}]: expected ${bsVal}, got ${twVal}`);
     }
   }
 
-  return errors;
+  return diff;
 }

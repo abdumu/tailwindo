@@ -210,8 +210,8 @@ export const contextualRules: ContextRule[] = [
         'card-body': ['flex-auto', 'p-4'],
         'card-title': ['mb-2', 'text-xl', 'font-medium'],
         'card-text': ['mb-4'],
-        'card-header': ['py-3', 'px-4', 'mb-0', 'bg-gray-100', 'border-b', 'border-solid', 'border-gray-200'],
-        'card-footer': ['py-3', 'px-4', 'bg-gray-100', 'border-t', 'border-solid', 'border-gray-200'],
+        'card-header': ['py-3', 'px-4', 'mb-0', 'bg-gray-100', 'border-b', 'border-gray-200'],
+        'card-footer': ['py-3', 'px-4', 'bg-gray-100', 'border-t', 'border-gray-200'],
         'card-img-top': ['w-full', 'rounded-t-md']
       };
 
@@ -242,11 +242,11 @@ export const contextualRules: ContextRule[] = [
         'form-control-lg': ['py-2', 'px-4', 'text-lg', 'rounded-lg'],
         'form-select': ['block', 'w-full', 'py-1.5', 'px-3', 'text-base', 'font-normal', 'text-gray-700', 'bg-white', 'bg-clip-padding', 'border', 'border-solid', 'border-gray-300', 'rounded', 'transition', 'ease-in-out', 'm-0', 'focus:text-gray-700', 'focus:bg-white', 'focus:border-blue-600', 'focus:outline-none'],
         'form-label': ['inline-block', 'mb-2', 'text-gray-700'],
-        'form-check': ['block', 'min-h-[1.5rem]', 'pl-[1.5em]', 'mb-[0.125rem]'],
-        'form-check-input': ['float-left', '-ml-[1.5em]', 'w-[1em]', 'h-[1em]', 'mt-[0.25em]', 'align-top', 'bg-white', 'bg-no-repeat', 'bg-center', 'bg-contain', 'border', 'border-solid', 'border-gray-300', 'appearance-none', 'checked:bg-blue-600', 'checked:border-blue-600', 'focus:outline-none'],
+        'form-check': ['block', 'min-h-[1.5rem]', 'pl-[1.5em]', 'mb-4'],
+        'form-check-input': ['float-left', '-ml-[1.5em]', 'w-[1em]', 'h-[1em]', 'mt-[0.25em]', 'align-top', 'bg-white', 'bg-no-repeat', 'bg-center', 'bg-contain', 'border', 'border-gray-300', 'appearance-none', 'checked:bg-blue-600', 'checked:border-blue-600', 'focus:outline-none'],
         'form-check-label': ['inline-block', 'text-gray-800'],
         'input-group': ['relative', 'flex', 'flex-wrap', 'items-stretch', 'w-full'],
-        'input-group-text': ['flex', 'items-center', 'py-1.5', 'px-3', 'text-base', 'font-normal', 'text-gray-700', 'text-center', 'whitespace-nowrap', 'bg-gray-100', 'border', 'border-solid', 'border-gray-300', 'rounded']
+        'input-group-text': ['flex', 'items-center', 'py-1.5', 'px-3', 'text-base', 'font-normal', 'text-gray-700', 'text-center', 'whitespace-nowrap', 'bg-gray-100', 'border', 'border-gray-300', 'rounded']
       };
 
       for (const [part, to] of Object.entries(formParts)) {
