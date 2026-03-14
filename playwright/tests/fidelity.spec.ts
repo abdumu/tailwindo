@@ -14,7 +14,14 @@ const KNOWN_FAILURES_FILE = path.resolve(__dirname, '../known-failures.json');
 let knownFailures: string[] = [];
 if (fs.existsSync(KNOWN_FAILURES_FILE)) {
   const parsed = JSON.parse(fs.readFileSync(KNOWN_FAILURES_FILE, 'utf-8'));
-  knownFailures = parsed.map((f: any) => f.fixture || f);
+  knownFailures = parsed.map((f: any) => {
+    if (typeof f === 'string') return f;
+    if (f.fixture) return f.fixture;
+    if (!f.id || !f.reason || !f.date_added || !f.owner) {
+      throw new Error(`Malformed known-failures.json entry: ${JSON.stringify(f)}`);
+    }
+    return f.id;
+  });
 }
 
 const frameworks = fs.readdirSync(FIXTURES_DIR).filter(f => fs.statSync(path.join(FIXTURES_DIR, f)).isDirectory());
@@ -106,7 +113,7 @@ test.describe('Fidelity Tests', () => {
         const bsMetrics = await getElementMetrics(bsPage, bsLocator);
         const twMetrics = await getElementMetrics(twPage, twLocator);
 
-        const diff = compareMetrics(bsMetrics, twMetrics, fixture.name);
+        const diff = compareMetrics(bsMetrics, twMetrics, { fixture: fixture.dir, elementId: id });
         const hasErrors = Object.values(diff).some(arr => arr.length > 0);
 
         if (hasErrors) {
@@ -130,11 +137,7 @@ test.describe('Fidelity Tests', () => {
       }
 
       // Check known-failures.json
-      let isKnownFailure = false;
-      if (fs.existsSync(KNOWN_FAILURES_FILE)) {
-        const parsed = JSON.parse(fs.readFileSync(KNOWN_FAILURES_FILE, 'utf-8'));
-        isKnownFailure = parsed.some((f: any) => f.id === fixture.dir || f.id === fixture.name);
-      }
+      let isKnownFailure = knownFailures.includes(fixture.dir) || knownFailures.includes(fixture.name);
 
       if (isKnownFailure) {
         summary.quarantined++;
@@ -146,7 +149,7 @@ test.describe('Fidelity Tests', () => {
             const diff = allErrors[id];
             for (const category of Object.values(diff)) {
               for (const errorStr of category) {
-                 const match = errorStr.match(/^\[(.*?)\]/);
+                 const match = errorStr.match(/\[(.*?)\]/);
                  const prop = match ? match[1] : errorStr.split(':')[0];
                  summary.propertyMismatches[prop] = (summary.propertyMismatches[prop] || 0) + 1;
               }
