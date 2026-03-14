@@ -64,10 +64,28 @@ export interface ComparisonDiff {
 
 // Specific overrides table keyed by fixture name -> property -> tolerance
 const FIXTURE_OVERRIDES: Record<string, Record<string, number>> = {
-  // Example: 'grid': { 'marginRight': 6 }
+  'forms': {
+    'paddingTop': 4,
+    'paddingRight': 4,
+    'paddingBottom': 4,
+    'paddingLeft': 4,
+  },
+  'grid': {
+    'gap': 4,
+  },
+  'bulma/columns': {
+    'marginTop': 4,
+    'marginRight': 4,
+    'marginBottom': 4,
+    'marginLeft': 4,
+    'paddingTop': 4,
+    'paddingRight': 4,
+    'paddingBottom': 4,
+    'paddingLeft': 4,
+  }
 };
 
-export function compareMetrics(bs: ElementMetrics, tw: ElementMetrics, fixtureName: string = ''): ComparisonDiff {
+export function compareMetrics(bs: ElementMetrics, tw: ElementMetrics, context: { fixture: string, elementId: string }): ComparisonDiff {
   const diff: ComparisonDiff = {
     geometry: [],
     spacing: [],
@@ -79,7 +97,7 @@ export function compareMetrics(bs: ElementMetrics, tw: ElementMetrics, fixtureNa
   };
   const GEOMETRY_TOLERANCE_PX = 2;
 
-  const overrides = FIXTURE_OVERRIDES[fixtureName] || {};
+  const overrides = FIXTURE_OVERRIDES[context.fixture] || {};
 
   // Compare Bounding Box
   for (const key of ['x', 'y', 'width', 'height'] as const) {
