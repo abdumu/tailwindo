@@ -13,6 +13,7 @@ interface TransformOptions {
   backup: boolean;
   mode: 'utilities' | 'fidelity' | 'mixed';
   components?: string;
+  prefix?: string;
 }
 
 export function transformCommand(path: string, options: TransformOptions) {
@@ -22,7 +23,8 @@ export function transformCommand(path: string, options: TransformOptions) {
   const extractedComponents = new Map<string, string[]>();
 
   for (const file of files) {
-    const r = processFile(file, options.from as DialectName, options.components ? true : false, extractedComponents, options.mode);
+    const overrides = { prefix: options.prefix };
+    const r = processFile(file, options.from as DialectName, options.components ? true : false, extractedComponents, options.mode, overrides);
 
     if (r.originalContent !== r.transformedContent) {
       if (!options.write || options.diff) {

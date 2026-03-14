@@ -90,17 +90,25 @@ export function getFiles(pathStr: string, extensions: string, ignorePaths?: stri
   return globSync(pattern, { ignore: ignorePattern, absolute: true });
 }
 
-export function processFile(file: string, fromOption: DialectName, componentsMode = false, extractedComponents?: Map<string, string[]>, mode: 'utilities' | 'fidelity' | 'mixed' = 'mixed'): FileResult {
+export interface ProcessOverrides {
+  prefix?: string;
+  colors?: Record<string, string>;
+  from?: DialectName;
+}
+
+export function processFile(file: string, fromOption: DialectName, componentsMode = false, extractedComponents?: Map<string, string[]>, mode: 'utilities' | 'fidelity' | 'mixed' = 'mixed', overrides?: ProcessOverrides): FileResult {
   const content = fs.readFileSync(file, 'utf8');
   const ext = file.split('.').pop()?.toLowerCase();
 
   // Override fromOption if config defines 'from'
-  const resolvedFromOption = loadedConfig.from || fromOption;
+  const resolvedFromOption = overrides?.from || loadedConfig.from || fromOption;
+  const resolvedPrefix = overrides?.prefix ?? loadedConfig.prefix;
+  const resolvedColors = overrides?.colors ?? loadedConfig.colors;
 
   const dialectName = getDialect(resolvedFromOption, content);
 
-  const dialect = getDialectWithConfig(resolvedFromOption, content, loadedConfig.colors);
-  const converter = new Converter(dialect, loadedConfig.prefix, componentsMode, mode);
+  const dialect = getDialectWithConfig(resolvedFromOption, content, resolvedColors);
+  const converter = new Converter(dialect, resolvedPrefix, componentsMode, mode);
 
   let tokens: TokenRange[] = [];
 

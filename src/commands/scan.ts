@@ -7,13 +7,15 @@ interface ScanOptions {
   extensions: string;
   format: string;
   ignore?: string;
+  prefix?: string;
 }
 
 export function scanCommand(path: string, options: ScanOptions) {
   const ignorePaths = options.ignore ? options.ignore.split(',').map(s => s.trim()) : undefined;
   const files = getFiles(path, options.extensions, ignorePaths);
 
-  const results: FileResult[] = files.map(file => processFile(file, options.from as DialectName));
+  const overrides = { prefix: options.prefix };
+  const results: FileResult[] = files.map(file => processFile(file, options.from as DialectName, false, undefined, 'mixed', overrides));
 
   const totalFiles = results.length;
   let totalTokens = 0;

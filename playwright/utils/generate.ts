@@ -34,13 +34,13 @@ export default async function globalSetup() {
 
     try {
       fs.copyFileSync(fixtureInput, fixtureOutFile);
-      execSync(`npx tsx src/cli.ts transform ${fixtureOutFile} --write --components ${tempComponentsFile}`, { stdio: 'inherit' });
+      execSync(`npx tsx src/cli.ts transform ${fixtureOutFile} --prefix tw: --write --components ${tempComponentsFile}`, { stdio: 'inherit' });
 
       fs.copyFileSync(fixtureInput, path.join(fixtureOutDir, 'bootstrap.html'));
 
       const fixtureOutFile2 = path.join(fixtureOutDir, 'tailwind2.html');
       fs.copyFileSync(fixtureOutFile, fixtureOutFile2);
-      execSync(`npx tsx src/cli.ts transform ${fixtureOutFile2} --write --components ${tempComponentsFile}`, { stdio: 'inherit' });
+      execSync(`npx tsx src/cli.ts transform ${fixtureOutFile2} --prefix tw: --write --components ${tempComponentsFile}`, { stdio: 'inherit' });
 
       const content1 = fs.readFileSync(fixtureOutFile, 'utf-8');
       const content2 = fs.readFileSync(fixtureOutFile2, 'utf-8');
@@ -48,7 +48,8 @@ export default async function globalSetup() {
       const KNOWN_FAILURES_FILE = path.resolve(__dirname, '../known-failures.json');
       let knownFailures: string[] = [];
       if (fs.existsSync(KNOWN_FAILURES_FILE)) {
-        knownFailures = JSON.parse(fs.readFileSync(KNOWN_FAILURES_FILE, 'utf-8'));
+        const parsed = JSON.parse(fs.readFileSync(KNOWN_FAILURES_FILE, 'utf-8'));
+        knownFailures = parsed.map((f: any) => f.fixture);
       }
 
       if (content1 !== content2) {

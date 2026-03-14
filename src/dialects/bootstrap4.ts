@@ -68,9 +68,9 @@ export const getBootstrap4Rules = (customColors?: Record<string, string>): RuleT
 
 
     // Grid
-    { match: 'container', replace: ['container'] },
-    { match: 'container-fluid', replace: ['w-full'] },
-    { match: /^container-(sm|md|lg|xl)$/, replace: (m) => [`container`, 'mx-auto', `max-w-screen-${m[1]}`] , confidence: 0.8 },
+    { match: 'container', replace: ['container', 'mx-auto', 'px-3'] },
+    { match: 'container-fluid', replace: ['w-full', 'px-3'] },
+    { match: /^container-(sm|md|lg|xl)$/, replace: (m) => [`container`, 'mx-auto', `max-w-screen-${m[1]}`, 'px-3'] , confidence: 0.8 },
     { match: 'row', replace: ['flex', 'flex-wrap', '-mx-3'] },
     { match: 'no-gutters', replace: ['mx-0', '[&>*]:px-0'] },
     { match: 'col', replace: ['flex-1', 'px-3'] },

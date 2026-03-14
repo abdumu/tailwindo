@@ -6,6 +6,7 @@ interface CheckOptions {
   from: string;
   extensions: string;
   ignore?: string;
+  prefix?: string;
 }
 
 export function checkCommand(path: string, options: CheckOptions) {
@@ -16,7 +17,8 @@ export function checkCommand(path: string, options: CheckOptions) {
   let hasUnmapped = false;
 
   for (const file of files) {
-    const r = processFile(file, options.from as DialectName);
+    const overrides = { prefix: options.prefix };
+    const r = processFile(file, options.from as DialectName, false, undefined, 'mixed', overrides);
     if (r.originalContent !== r.transformedContent) {
       hasChanges = true;
       console.error(chalk.red(`File would be changed: ${file}`));
