@@ -89,6 +89,10 @@ Idempotency drift files: None. `Idempotency OK.` reported across all samples.
 
 ## 6. Prioritized Calibration Plan
 
+## 7. Promoted Fixtures (2026-03-14)
+- **bulma/new-card-content**: Missing `card-content` mapping.
+- **foundation/new-card-section**: Missing `card-section` mapping.
+
 1. **Columns/Grid (Bulma / Foundation / Bootstrap)**
    - **Failing fixtures/samples:** `bulma/columns`, `foundation/grid`, `grid`, `bootstrap/theme`
    - **Key mismatched properties:** `width`, `marginLeft`, `marginRight`, `padding` (for containers), `height`

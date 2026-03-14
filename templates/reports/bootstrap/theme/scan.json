@@ -1,1 +1,1 @@
-{"log":"--- Scan Summary ---\nFiles scanned: 1\nTotal class tokens: 23\nMapped tokens: 1\nUnmapped framework tokens: 19\nAverage confidence: 100.0%\n\nUnmapped framework classes (sample):\nbtn, btn-outline-primary, card-text, text-muted, card-title, card-body, card, col-md-6, btn-light, btn-lg, mt-2, mb-3, p-4, bg-primary, text-white, row, container\n"}
+{"log":"--- Scan Summary ---\nFiles scanned: 1\nTotal class tokens: 23\nMapped tokens: 23\nUnmapped framework tokens: 0\nAverage confidence: 90.4%\n\n"}

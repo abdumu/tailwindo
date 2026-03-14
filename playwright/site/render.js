@@ -9,7 +9,7 @@ async function loadFixture() {
   const link = document.createElement('link');
   link.rel = 'stylesheet';
   link.href = `../vendor/${framework}.min.css`;
-  document.head.appendChild(link);
+  if (type === 'bootstrap' || type === 'framework') { document.head.appendChild(link); }
 
   const basePath = (type === 'bootstrap' || type === 'framework') ? '../fixtures' : '../.generated';
   const fileName = (type === 'bootstrap' || type === 'framework') ? 'input.html' : 'tailwind.html';
