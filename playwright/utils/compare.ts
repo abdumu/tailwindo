@@ -64,14 +64,11 @@ export interface ComparisonDiff {
 
 // Specific overrides table keyed by fixture name -> property -> tolerance
 const FIXTURE_OVERRIDES: Record<string, Record<string, number>> = {
-  'forms': {
+  'bootstrap/forms': {
     'paddingTop': 4,
     'paddingRight': 4,
     'paddingBottom': 4,
     'paddingLeft': 4,
-  },
-  'grid': {
-    'gap': 4,
   },
   'bulma/columns': {
     'marginTop': 4,

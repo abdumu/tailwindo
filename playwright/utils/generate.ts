@@ -22,22 +22,18 @@ export default async function globalSetup() {
   const fixtures: { framework: string, name: string }[] = [];
 
   for (const framework of frameworks) {
-      if (framework === 'bulma' || framework === 'foundation') {
-          const subFixtures = fs.readdirSync(path.join(FIXTURES_DIR, framework)).filter(f => fs.statSync(path.join(FIXTURES_DIR, framework, f)).isDirectory());
-          subFixtures.forEach(f => fixtures.push({ framework, name: f }));
-      } else {
-          fixtures.push({ framework: 'bootstrap', name: framework });
-      }
+    const subFixtures = fs.readdirSync(path.join(FIXTURES_DIR, framework)).filter(f => fs.statSync(path.join(FIXTURES_DIR, framework, f)).isDirectory());
+    subFixtures.forEach(f => fixtures.push({ framework, name: f }));
   }
 
   let combinedComponentsCSS = '';
 
   for (const fixture of fixtures) {
-    const fixtureDir = fixture.framework === 'bootstrap' ? path.join(FIXTURES_DIR, fixture.name) : path.join(FIXTURES_DIR, fixture.framework, fixture.name);
+    const fixtureDir = path.join(FIXTURES_DIR, fixture.framework, fixture.name);
     const fixtureInput = path.join(fixtureDir, 'input.html');
     if (!fs.existsSync(fixtureInput)) continue;
 
-    const fixtureOutDir = fixture.framework === 'bootstrap' ? path.join(GENERATED_DIR, fixture.name) : path.join(GENERATED_DIR, fixture.framework, fixture.name);
+    const fixtureOutDir = path.join(GENERATED_DIR, fixture.framework, fixture.name);
     fs.mkdirSync(fixtureOutDir, { recursive: true });
 
     const fixtureOutFile = path.join(fixtureOutDir, 'tailwind.html');
@@ -90,6 +86,12 @@ export default async function globalSetup() {
     const tailwindInput = path.join(TAILWIND_DIR, 'input.css');
     const tailwindOutput = path.join(GENERATED_DIR, 'tailwind.css');
     execSync(`npx tailwindcss -i ${tailwindInput} -o ${tailwindOutput}`, { stdio: 'inherit' });
+
+    // Sanity check for Tailwind v4 prefix pipeline
+    const generatedCSS = fs.readFileSync(tailwindOutput, 'utf-8');
+    if (!generatedCSS.includes('.tw\\:p-4') || !generatedCSS.includes('.tw\\:mb-4')) {
+      throw new Error("Tailwind v4 prefix pipeline failed: missing .tw\\:p-4 or .tw\\:mb-4 classes in output.");
+    }
   } catch (err) {
     console.error('Tailwind build failed');
     console.error(err);

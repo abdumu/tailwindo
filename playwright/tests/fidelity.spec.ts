@@ -28,12 +28,8 @@ const frameworks = fs.readdirSync(FIXTURES_DIR).filter(f => fs.statSync(path.joi
 const fixtures: { framework: string, name: string, dir: string }[] = [];
 
 for (const framework of frameworks) {
-  if (framework === 'bulma' || framework === 'foundation') {
-    const subFixtures = fs.readdirSync(path.join(FIXTURES_DIR, framework)).filter(f => fs.statSync(path.join(FIXTURES_DIR, framework, f)).isDirectory());
-    subFixtures.forEach(f => fixtures.push({ framework, name: f, dir: `${framework}/${f}` }));
-  } else {
-    fixtures.push({ framework: 'bootstrap', name: framework, dir: framework });
-  }
+  const subFixtures = fs.readdirSync(path.join(FIXTURES_DIR, framework)).filter(f => fs.statSync(path.join(FIXTURES_DIR, framework, f)).isDirectory());
+  subFixtures.forEach(f => fixtures.push({ framework, name: f, dir: `${framework}/${f}` }));
 }
 
 test.describe('Fidelity Tests', () => {

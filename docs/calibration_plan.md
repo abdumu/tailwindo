@@ -26,12 +26,12 @@ npm run test:ui
   - position (expected relative, got static)
 - **Artifacts:** `playwright/.artifacts/bulma/columns/bulma-container/diff.json`
 
-**3. grid**
+**3. bootstrap/grid**
 - **Failing elements:** `grid-container`, `grid-row-1`, `grid-col-1`, `grid-col-2`, `grid-col-3`, `grid-row-2`, `grid-col-4`, `grid-col-5`
 - **Top mismatched properties:**
   - x, width
   - marginRight, marginLeft (expected ~50px, got 0px)
-- **Artifacts:** `playwright/.artifacts/grid/grid-container/diff.json`
+- **Artifacts:** `playwright/.artifacts/bootstrap/grid/grid-container/diff.json`
 
 **4. bulma/forms**
 - **Failing elements:** `bulma-form-box`, `bulma-field-name`, `bulma-label-name`, `bulma-control-name`, `bulma-input-name`, `bulma-field-email`, `bulma-label-email`, `bulma-control-email`, `bulma-input-email`, `bulma-help-email`
@@ -64,12 +64,12 @@ npm run test:ui
   - borderRadius (expected ~50%, got 3.35544e+07px)
 - **Artifacts:** `playwright/.artifacts/foundation/callout/foundation-callout-base/diff.json`
 
-**7. forms** (Bootstrap spacing issues)
+**7. bootstrap/forms** (Bootstrap spacing issues)
 - **Failing elements:** `form-group-3`, `form-container`, `form-submit`
 - **Top mismatched properties:**
   - marginBottom (expected ~16px, got 2px)
   - height, y
-- **Artifacts:** `playwright/.artifacts/forms/form-group-3/diff.json`
+- **Artifacts:** `playwright/.artifacts/bootstrap/forms/form-group-3/diff.json`
 
 
 ### 5.2 Sample Calibration Failures
@@ -77,21 +77,22 @@ Idempotency drift files: None. `Idempotency OK.` reported across all samples.
 
 **Bootstrap: bootstrap/theme**
 - **Top 10 unmapped tokens:** `btn`, `btn-outline-primary`, `card-text`, `text-muted`, `card-title`, `card-body`, `card`, `col-md-6`, `btn-light`, `btn-lg`
-- **Report path:** `templates/reports/bootstrap/theme/scan.json`
+- **Input path:** `templates/input/bootstrap/theme/`
 
 **Bulma: bulma/theme**
 - **Top 10 unmapped tokens:** `mt-3`, `has-text-grey`, `card-content`, `mt-4`, `has-text-light`, `mt-2`, `has-text-white`, `has-background-primary`, `p-5`, `is-vcentered`
-- **Report path:** `templates/reports/bulma/theme/scan.json`
+- **Input path:** `templates/input/bulma/theme/`
 
 **Foundation: foundation/theme**
 - **Top unmapped tokens:** `card-section`, `card`, `text-white`, `bg-primary`
-- **Report path:** `templates/reports/foundation/theme/scan.json`
+- **Input path:** `templates/input/foundation/theme/`
 
 ## 6. Prioritized Calibration Plan
 
 ## 7. Promoted Fixtures (2026-03-14)
 - **bulma/new-card-content**: Missing `card-content` mapping.
 - **foundation/new-card-section**: Missing `card-section` mapping.
+- **<framework>/mission2**: Mission 2 Finding Hunt.
 
 1. **Columns/Grid (Bulma / Foundation / Bootstrap)**
    - **Failing fixtures/samples:** `bulma/columns`, `foundation/grid`, `grid`, `bootstrap/theme`
