@@ -23,7 +23,7 @@ export const getFoundationRules = (): RuleType[] => {
 
     // Components
     { match: 'button', replace: ['inline-block', 'align-middle', 'text-center', 'cursor-pointer', 'px-4', 'py-3', 'text-sm', 'leading-normal', 'font-normal', 'transition-colors', 'duration-300', 'bg-blue-600', 'text-white', 'hover:bg-blue-700'] },
-    { match: 'callout', replace: ['relative', 'm-0', 'mb-4', 'p-4', 'border', 'border-gray-300', 'bg-gray-100', 'text-gray-800'] },
+    { match: 'callout', replace: ['relative', 'mb-4', 'p-4', 'border', 'border-gray-300', 'bg-gray-100', 'text-gray-800'] },
     { match: 'top-bar', replace: ['flex', 'items-center', 'justify-between', 'p-2', 'bg-gray-200'] },
     { match: 'menu', replace: ['flex', 'flex-wrap', 'list-none', 'p-0', 'm-0'] },
     { match: 'label', replace: ['inline-block', 'px-2', 'py-1', 'text-xs', 'leading-none', 'whitespace-nowrap', 'text-center', 'font-bold', 'rounded-sm', 'bg-blue-600', 'text-white'] },

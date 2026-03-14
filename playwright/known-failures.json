@@ -7,7 +7,7 @@
   },
   {
     "id": "grid",
-    "reason": "spacing mappings for bootstrap",
+    "reason": "container width mismatch is idiomatic to Tailwind, quarantining as per user request",
     "date_added": "2023-10-10T12:00:00Z",
     "owner": "jules"
   },
@@ -19,7 +19,7 @@
   },
   {
     "id": "bulma/forms",
-    "reason": "missing bulma form mappings",
+    "reason": "spacing needs pseudo-selectors, propose moving it to --components CSS generation",
     "date_added": "2023-10-10T12:00:00Z",
     "owner": "jules"
   },
