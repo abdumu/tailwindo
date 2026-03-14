@@ -61,7 +61,7 @@ export const getBulmaRules = (): RuleType[] => {
     { match: 'is-large', replace: ['text-xl', 'px-6', 'py-3'] },
 
     // Components
-    { match: 'box', replace: ['bg-white', 'rounded-lg', 'shadow', 'p-6'] },
+    { match: 'box', replace: ['bg-white', 'rounded-lg', 'shadow', 'p-5'] },
     { match: 'card', replace: ['bg-white', 'rounded', 'shadow', 'overflow-hidden'] },
     { match: 'notification', replace: ['bg-gray-100', 'rounded', 'p-5'] },
     { match: 'message', replace: ['bg-gray-100', 'rounded', 'overflow-hidden'] },
@@ -69,7 +69,7 @@ export const getBulmaRules = (): RuleType[] => {
     // Forms
     { match: 'field', replace: ['mb-3'] },
     { match: 'control', replace: ['relative'] },
-    { match: 'input', replace: ['appearance-none', 'block', 'w-full', 'px-3', 'py-2', 'border', 'border-gray-300', 'rounded', 'leading-normal', 'focus:outline-none'] },
+    { match: 'input', replace: ['appearance-none', 'inline-flex', 'items-center', 'justify-start', 'relative', 'w-full', 'px-3', 'py-2', 'border', 'border-gray-300', 'rounded', 'shadow-inner', 'leading-normal', 'focus:outline-none'] },
     { match: 'textarea', replace: ['appearance-none', 'block', 'w-full', 'px-3', 'py-2', 'border', 'border-gray-300', 'rounded', 'leading-normal', 'focus:outline-none'] },
     { match: 'select', replace: ['inline-block', 'relative'] },
     { match: 'label', replace: ['block', 'text-gray-700', 'font-bold', 'mb-2'] },
