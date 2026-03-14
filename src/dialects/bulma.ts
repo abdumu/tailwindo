@@ -69,7 +69,7 @@ export const getBulmaRules = (): RuleType[] => {
     // Forms
     { match: 'field', replace: ['mb-3'] },
     { match: 'control', replace: ['relative'] },
-    { match: 'input', replace: ['appearance-none', 'inline-flex', 'items-center', 'justify-start', 'relative', 'w-full', 'px-3', 'py-2', 'border', 'border-gray-300', 'rounded', 'shadow-inner', 'leading-normal', 'focus:outline-none'] },
+    { match: 'input', replace: ['appearance-none', 'items-center', 'justify-start', 'relative', 'w-full', 'px-3', 'py-2', 'border', 'border-gray-300', 'rounded', 'shadow-inner', 'leading-normal', 'focus:outline-none'] },
     { match: 'textarea', replace: ['appearance-none', 'block', 'w-full', 'px-3', 'py-2', 'border', 'border-gray-300', 'rounded', 'leading-normal', 'focus:outline-none'] },
     { match: 'select', replace: ['inline-block', 'relative'] },
     { match: 'label', replace: ['block', 'text-gray-700', 'font-bold', 'mb-2'] },

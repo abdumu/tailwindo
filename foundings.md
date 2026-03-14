@@ -6,7 +6,7 @@ This file tracks major sample-driven mismatches and promoted fixtures from our c
 - **Framework**: Bootstrap
 - **Issue**: Need a real-world card component test.
 - **Fixture**: `playwright/fixtures/bootstrap/cards`
-- **Artifacts**: `templates/reports/bootstrap/theme/...`
+- **Artifacts**: `playwright/.artifacts/bootstrap/cards/...` / `templates/input/bootstrap/theme/...`
 - **Reproducer**: `npm run test:ui -- --project=chromium`
 - **Status**: Added as fixture.
 
@@ -14,7 +14,7 @@ This file tracks major sample-driven mismatches and promoted fixtures from our c
 - **Framework**: Bulma
 - **Issue**: Need a real-world card component test.
 - **Fixture**: `playwright/fixtures/bulma/cards`
-- **Artifacts**: `templates/reports/bulma/theme/...`
+- **Artifacts**: `playwright/.artifacts/bulma/cards/...` / `templates/input/bulma/theme/...`
 - **Reproducer**: `npm run test:ui -- --project=chromium`
 - **Status**: Added as fixture.
 
@@ -22,7 +22,7 @@ This file tracks major sample-driven mismatches and promoted fixtures from our c
 - **Framework**: Bulma
 - **Issue**: Need a real-world button component test.
 - **Fixture**: `playwright/fixtures/bulma/buttons`
-- **Artifacts**: `templates/reports/bulma/theme/...`
+- **Artifacts**: `playwright/.artifacts/bulma/buttons/...` / `templates/input/bulma/theme/...`
 - **Reproducer**: `npm run test:ui -- --project=chromium`
 - **Status**: Added as fixture.
 
@@ -30,7 +30,7 @@ This file tracks major sample-driven mismatches and promoted fixtures from our c
 - **Framework**: Foundation
 - **Issue**: Need a real-world card component test.
 - **Fixture**: `playwright/fixtures/foundation/cards`
-- **Artifacts**: `templates/reports/foundation/theme/...`
+- **Artifacts**: `playwright/.artifacts/foundation/cards/...` / `templates/input/foundation/theme/...`
 - **Reproducer**: `npm run test:ui -- --project=chromium`
 - **Status**: Added as fixture.
 
@@ -38,7 +38,7 @@ This file tracks major sample-driven mismatches and promoted fixtures from our c
 - **Framework**: Foundation
 - **Issue**: Need a real-world button component test.
 - **Fixture**: `playwright/fixtures/foundation/buttons`
-- **Artifacts**: `templates/reports/foundation/theme/...`
+- **Artifacts**: `playwright/.artifacts/foundation/buttons/...` / `templates/input/foundation/theme/...`
 - **Reproducer**: `npm run test:ui -- --project=chromium`
 - **Status**: Added as fixture.
 
@@ -46,7 +46,7 @@ This file tracks major sample-driven mismatches and promoted fixtures from our c
 - **Framework**: Bulma
 - **Issue**: Missing `card-content` mapping.
 - **Fixture**: `playwright/fixtures/bulma/new-card-content`
-- **Artifacts**: `templates/reports/bulma/new-sample/...`
+- **Artifacts**: `playwright/.artifacts/bulma/new-card-content/...` / `templates/input/bulma/new-sample/...`
 - **Reproducer**: `npm run test:ui -- --project=chromium`
 - **Status**: Added as fixture.
 
@@ -54,7 +54,15 @@ This file tracks major sample-driven mismatches and promoted fixtures from our c
 - **Framework**: Foundation
 - **Issue**: Missing `card-section` mapping.
 - **Fixture**: `playwright/fixtures/foundation/new-card-section`
-- **Artifacts**: `templates/reports/foundation/new-sample/...`
+- **Artifacts**: `playwright/.artifacts/foundation/new-card-section/...` / `templates/input/foundation/new-sample/...`
+- **Reproducer**: `npm run test:ui -- --project=chromium`
+- **Status**: Added as fixture.
+
+## F-2026-03-14-008
+- **Framework**: All
+- **Issue**: Mission 2 Finding Hunt
+- **Fixture**: `playwright/fixtures/<framework>/mission2`
+- **Artifacts**: `playwright/.artifacts/<framework>/mission2/...` / `templates/input/<framework>/mission2/...`
 - **Reproducer**: `npm run test:ui -- --project=chromium`
 - **Status**: Added as fixture.
 
