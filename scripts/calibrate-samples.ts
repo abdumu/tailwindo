@@ -48,10 +48,13 @@ for (const framework of frameworks) {
     // Copy files to output
     execSync(`cp -r ${sampleInputDir}/* ${sampleOutputDir}/`);
 
+    let dialectFlag = framework;
+    if (framework === 'bootstrap' || framework === 'clean-blog') dialectFlag = 'bootstrap5';
+
     // 1. Scan
     console.log('  Running scan...');
     try {
-      execSync(`npx tsx ${CLI_PATH} scan ${sampleInputDir} --from ${framework} > ${sampleReportsDir}/scan.log 2>&1`);
+      execSync(`npx tsx ${CLI_PATH} scan ${sampleInputDir} --from ${dialectFlag} > ${sampleReportsDir}/scan.log 2>&1`);
       // For now, save plain logs as JSON report placeholder
       const scanLog = fs.readFileSync(path.join(sampleReportsDir, 'scan.log'), 'utf8');
       fs.writeFileSync(path.join(sampleReportsDir, 'scan.json'), JSON.stringify({ log: scanLog }));
@@ -62,7 +65,7 @@ for (const framework of frameworks) {
     // 2. Transform (Pass 1)
     console.log('  Running transform (Pass 1)...');
     try {
-      execSync(`npx tsx ${CLI_PATH} transform ${sampleOutputDir} --from ${framework} --prefix tw- --write > ${sampleReportsDir}/transform.log 2>&1`);
+      execSync(`npx tsx ${CLI_PATH} transform ${sampleOutputDir} --from ${dialectFlag} --prefix tw- --write > ${sampleReportsDir}/transform.log 2>&1`);
       const transformLog = fs.readFileSync(path.join(sampleReportsDir, 'transform.log'), 'utf8');
       fs.writeFileSync(path.join(sampleReportsDir, 'transform.json'), JSON.stringify({ log: transformLog }));
     } catch (e: any) {
@@ -78,7 +81,7 @@ for (const framework of frameworks) {
     // 3. Transform (Pass 2) for Idempotency
     console.log('  Running transform (Pass 2) for idempotency...');
     try {
-      execSync(`npx tsx ${CLI_PATH} transform ${sampleOutputDir} --from ${framework} --prefix tw- --write > ${sampleReportsDir}/transform2.log 2>&1`);
+      execSync(`npx tsx ${CLI_PATH} transform ${sampleOutputDir} --from ${dialectFlag} --prefix tw- --write > ${sampleReportsDir}/transform2.log 2>&1`);
     } catch (e: any) {
       console.error(`  Transform (Pass 2) failed: ${e.message}`);
       failed = true;

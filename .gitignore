@@ -7,5 +7,4 @@ playwright/.artifacts/
 playwright/.generated/
 test-results/
 playwright-report/
-templates/output/
 templates/reports/

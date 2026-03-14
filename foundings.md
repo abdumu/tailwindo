@@ -41,3 +41,7 @@ This file tracks major sample-driven mismatches and promoted fixtures from our c
 - **Artifacts**: `templates/reports/foundation/theme/...`
 - **Reproducer**: `npm run test:ui -- --project=chromium`
 - **Status**: Added as fixture.
+
+## Testing & Fidelity
+
+See [Calibration Plan](docs/calibration_plan.md) for a summary of known fidelity failures and an upcoming prioritized calibration plan.
