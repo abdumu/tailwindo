@@ -12,7 +12,8 @@
     "test:ui": "npx playwright test",
     "test:watch": "vitest",
     "lint": "eslint src",
-    "calibrate:samples": "tsx scripts/calibrate-samples.ts"
+    "calibrate:samples": "tsx scripts/calibrate-samples.ts",
+    "regen:templates": "npm run calibrate:samples"
   },
   "type": "module",
   "repository": {
