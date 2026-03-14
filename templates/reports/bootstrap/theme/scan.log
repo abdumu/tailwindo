@@ -1,0 +1,9 @@
+--- Scan Summary ---
+Files scanned: 1
+Total class tokens: 23
+Mapped tokens: 1
+Unmapped framework tokens: 19
+Average confidence: 100.0%
+
+Unmapped framework classes (sample):
+btn, btn-outline-primary, card-text, text-muted, card-title, card-body, card, col-md-6, btn-light, btn-lg, mt-2, mb-3, p-4, bg-primary, text-white, row, container
