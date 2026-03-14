@@ -1,4 +1,4 @@
 [
-  { "fixture": "forms", "reason": "spacing" },
-  { "fixture": "grid", "reason": "spacing" }
+  { "id": "bulma/columns", "reason": "spacing for bulma columns", "date_added": "2023-10-10T12:00:00Z", "owner": "jules" },
+  { "id": "foundation/callout", "reason": "missing foundation component rules", "date_added": "2023-10-10T12:00:00Z", "owner": "jules" }
 ]

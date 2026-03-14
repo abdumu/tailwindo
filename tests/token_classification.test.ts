@@ -6,28 +6,47 @@ describe('Token Classification', () => {
     const converter = new Converter({ name: 'dummy', rules: [] });
 
     // Spacing
-    expect(converter.isBootstrapLikeToken('mt-3')).toBe(true);
-    expect(converter.isBootstrapLikeToken('px-4')).toBe(true);
+    expect(converter.isFrameworkLikeToken('mt-3')).toBe(true);
+    expect(converter.isFrameworkLikeToken('px-4')).toBe(true);
     // Display
-    expect(converter.isBootstrapLikeToken('d-none')).toBe(true);
+    expect(converter.isFrameworkLikeToken('d-none')).toBe(true);
     // Grid/Components
-    expect(converter.isBootstrapLikeToken('container')).toBe(true);
-    expect(converter.isBootstrapLikeToken('row')).toBe(true);
-    expect(converter.isBootstrapLikeToken('col-md-6')).toBe(true);
-    expect(converter.isBootstrapLikeToken('btn-primary')).toBe(true);
+    expect(converter.isFrameworkLikeToken('container')).toBe(true);
+    expect(converter.isFrameworkLikeToken('row')).toBe(true);
+    expect(converter.isFrameworkLikeToken('col-md-6')).toBe(true);
+    expect(converter.isFrameworkLikeToken('btn-primary')).toBe(true);
+  });
+
+  it('identifies unmapped bulma tokens', () => {
+    const converter = new Converter({ name: 'dummy', rules: [] });
+
+    expect(converter.isFrameworkLikeToken('is-primary')).toBe(true);
+    expect(converter.isFrameworkLikeToken('has-text-centered')).toBe(true);
+    expect(converter.isFrameworkLikeToken('columns')).toBe(true);
+    expect(converter.isFrameworkLikeToken('column')).toBe(true);
+  });
+
+  it('identifies unmapped foundation tokens', () => {
+    const converter = new Converter({ name: 'dummy', rules: [] });
+
+    expect(converter.isFrameworkLikeToken('grid-x')).toBe(true);
+    expect(converter.isFrameworkLikeToken('cell')).toBe(true);
+    expect(converter.isFrameworkLikeToken('small-12')).toBe(true);
+    expect(converter.isFrameworkLikeToken('medium-6')).toBe(true);
+    expect(converter.isFrameworkLikeToken('show-for-medium')).toBe(true);
   });
 
   it('identifies custom/tailwind tokens', () => {
     const converter = new Converter({ name: 'dummy', rules: [] });
 
     // Custom prefixes/BEM
-    expect(converter.isBootstrapLikeToken('app-header')).toBe(false);
-    expect(converter.isBootstrapLikeToken('js-modal')).toBe(false);
-    expect(converter.isBootstrapLikeToken('foo__bar')).toBe(false);
+    expect(converter.isFrameworkLikeToken('app-header')).toBe(false);
+    expect(converter.isFrameworkLikeToken('js-modal')).toBe(false);
+    expect(converter.isFrameworkLikeToken('foo__bar')).toBe(false);
     // Tailwind specific
-    expect(converter.isBootstrapLikeToken('md:flex')).toBe(false);
-    expect(converter.isBootstrapLikeToken('hover:bg-red-500')).toBe(false);
+    expect(converter.isFrameworkLikeToken('md:flex')).toBe(false);
+    expect(converter.isFrameworkLikeToken('hover:bg-red-500')).toBe(false);
     // Unrelated words
-    expect(converter.isBootstrapLikeToken('unknown')).toBe(false);
+    expect(converter.isFrameworkLikeToken('unknown')).toBe(false);
   });
 });

@@ -17,7 +17,17 @@ if (fs.existsSync(KNOWN_FAILURES_FILE)) {
   knownFailures = parsed.map((f: any) => f.fixture || f);
 }
 
-const fixtures = fs.readdirSync(FIXTURES_DIR).filter(f => fs.statSync(path.join(FIXTURES_DIR, f)).isDirectory());
+const frameworks = fs.readdirSync(FIXTURES_DIR).filter(f => fs.statSync(path.join(FIXTURES_DIR, f)).isDirectory());
+const fixtures: { framework: string, name: string, dir: string }[] = [];
+
+for (const framework of frameworks) {
+  if (framework === 'bulma' || framework === 'foundation') {
+    const subFixtures = fs.readdirSync(path.join(FIXTURES_DIR, framework)).filter(f => fs.statSync(path.join(FIXTURES_DIR, framework, f)).isDirectory());
+    subFixtures.forEach(f => fixtures.push({ framework, name: f, dir: `${framework}/${f}` }));
+  } else {
+    fixtures.push({ framework: 'bootstrap', name: framework, dir: framework });
+  }
+}
 
 test.describe('Fidelity Tests', () => {
   const summary = {
@@ -26,6 +36,21 @@ test.describe('Fidelity Tests', () => {
     quarantined: 0,
     propertyMismatches: {} as Record<string, number>
   };
+
+  test('known-failures schema is enforced', () => {
+    if (fs.existsSync(KNOWN_FAILURES_FILE)) {
+      const parsed = JSON.parse(fs.readFileSync(KNOWN_FAILURES_FILE, 'utf-8'));
+      for (const entry of parsed) {
+        expect(entry).toHaveProperty('id');
+        expect(entry).toHaveProperty('reason');
+        expect(entry).toHaveProperty('date_added');
+        expect(entry).toHaveProperty('owner');
+        // date must be ISO
+        expect(new Date(entry.date_added).toISOString().startsWith(entry.date_added.split('T')[0])).toBe(true);
+        expect(typeof entry.owner).toBe('string');
+      }
+    }
+  });
 
   test.afterAll(() => {
     console.log('\n--- Fidelity Test Summary ---');
@@ -44,7 +69,7 @@ test.describe('Fidelity Tests', () => {
   });
 
   for (const fixture of fixtures) {
-    test(`Bootstrap vs Tailwind output matches for ${fixture}`, async ({ browser }) => {
+    test(`Bootstrap vs Tailwind output matches for ${fixture.dir}`, async ({ browser }) => {
       const bsContext = await browser.newContext();
       const bsPage = await bsContext.newPage();
 
@@ -52,8 +77,8 @@ test.describe('Fidelity Tests', () => {
       const twPage = await twContext.newPage();
 
       // Go to harness pages
-      const bsUrl = `http://localhost:8080/site/bootstrap.html?fixture=${fixture}&type=bootstrap`;
-      const twUrl = `http://localhost:8080/site/tailwind.html?fixture=${fixture}&type=tailwind`;
+      const bsUrl = `http://localhost:8080/site/framework.html?fixture=${fixture.dir}&framework=${fixture.framework}`;
+      const twUrl = `http://localhost:8080/site/tailwind.html?fixture=${fixture.dir}&framework=${fixture.framework}&type=tailwind`;
 
       await bsPage.goto(bsUrl);
       await twPage.goto(twUrl);
@@ -81,32 +106,39 @@ test.describe('Fidelity Tests', () => {
         const bsMetrics = await getElementMetrics(bsPage, bsLocator);
         const twMetrics = await getElementMetrics(twPage, twLocator);
 
-        const diff = compareMetrics(bsMetrics, twMetrics);
+        const diff = compareMetrics(bsMetrics, twMetrics, fixture.name);
         const hasErrors = Object.values(diff).some(arr => arr.length > 0);
 
         if (hasErrors) {
           failed = true;
           allErrors[id] = diff;
 
-          // Save artifacts
-          const fixtureArtifactsDir = path.join(ARTIFACTS_DIR, fixture);
-          fs.mkdirSync(fixtureArtifactsDir, { recursive: true });
+          // Save artifacts per element
+          const elementArtifactsDir = path.join(ARTIFACTS_DIR, fixture.dir, id);
+          fs.mkdirSync(elementArtifactsDir, { recursive: true });
 
-          await bsPage.screenshot({ path: path.join(fixtureArtifactsDir, `bootstrap-failure-${id}.png`) });
-          await twPage.screenshot({ path: path.join(fixtureArtifactsDir, `tailwind-failure-${id}.png`) });
-          fs.writeFileSync(path.join(fixtureArtifactsDir, `metrics-${id}.json`), JSON.stringify({ bsMetrics, twMetrics, diff }, null, 2));
+          fs.writeFileSync(path.join(elementArtifactsDir, `bootstrap.json`), JSON.stringify(bsMetrics, null, 2));
+          fs.writeFileSync(path.join(elementArtifactsDir, `tailwind.json`), JSON.stringify(twMetrics, null, 2));
+          fs.writeFileSync(path.join(elementArtifactsDir, `diff.json`), JSON.stringify(diff, null, 2));
+          await bsPage.screenshot({ path: path.join(elementArtifactsDir, `bootstrap-failure.png`) });
+          await twPage.screenshot({ path: path.join(elementArtifactsDir, `tailwind-failure.png`) });
         }
       }
 
       if (failed) {
-        console.error('Fidelity check failed for fixture:', fixture, JSON.stringify(allErrors, null, 2));
+        console.error('Fidelity check failed for fixture:', fixture.dir, JSON.stringify(allErrors, null, 2));
       }
 
-      const isKnownFailure = knownFailures.includes(fixture);
+      // Check known-failures.json
+      let isKnownFailure = false;
+      if (fs.existsSync(KNOWN_FAILURES_FILE)) {
+        const parsed = JSON.parse(fs.readFileSync(KNOWN_FAILURES_FILE, 'utf-8'));
+        isKnownFailure = parsed.some((f: any) => f.id === fixture.dir || f.id === fixture.name);
+      }
 
       if (isKnownFailure) {
         summary.quarantined++;
-        expect(failed, `Fixture '${fixture}' is quarantined in known-failures.json but passed the fidelity test! Please remove it from known-failures.json.`).toBe(true);
+        expect(failed, `Fixture '${fixture.dir}' is quarantined in known-failures.json but passed the fidelity test! Please remove it from known-failures.json.`).toBe(true);
       } else {
         if (failed) {
           summary.failed++;

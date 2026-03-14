@@ -18,15 +18,26 @@ export default async function globalSetup() {
   }
   fs.mkdirSync(GENERATED_DIR, { recursive: true });
 
-  const fixtures = fs.readdirSync(FIXTURES_DIR).filter(f => fs.statSync(path.join(FIXTURES_DIR, f)).isDirectory());
+  const frameworks = fs.readdirSync(FIXTURES_DIR).filter(f => fs.statSync(path.join(FIXTURES_DIR, f)).isDirectory());
+  const fixtures: { framework: string, name: string }[] = [];
+
+  for (const framework of frameworks) {
+      if (framework === 'bulma' || framework === 'foundation') {
+          const subFixtures = fs.readdirSync(path.join(FIXTURES_DIR, framework)).filter(f => fs.statSync(path.join(FIXTURES_DIR, framework, f)).isDirectory());
+          subFixtures.forEach(f => fixtures.push({ framework, name: f }));
+      } else {
+          fixtures.push({ framework: 'bootstrap', name: framework });
+      }
+  }
 
   let combinedComponentsCSS = '';
 
   for (const fixture of fixtures) {
-    const fixtureInput = path.join(FIXTURES_DIR, fixture, 'input.html');
+    const fixtureDir = fixture.framework === 'bootstrap' ? path.join(FIXTURES_DIR, fixture.name) : path.join(FIXTURES_DIR, fixture.framework, fixture.name);
+    const fixtureInput = path.join(fixtureDir, 'input.html');
     if (!fs.existsSync(fixtureInput)) continue;
 
-    const fixtureOutDir = path.join(GENERATED_DIR, fixture);
+    const fixtureOutDir = fixture.framework === 'bootstrap' ? path.join(GENERATED_DIR, fixture.name) : path.join(GENERATED_DIR, fixture.framework, fixture.name);
     fs.mkdirSync(fixtureOutDir, { recursive: true });
 
     const fixtureOutFile = path.join(fixtureOutDir, 'tailwind.html');
@@ -36,7 +47,7 @@ export default async function globalSetup() {
       fs.copyFileSync(fixtureInput, fixtureOutFile);
       execSync(`npx tsx src/cli.ts transform ${fixtureOutFile} --prefix tw: --write --components ${tempComponentsFile}`, { stdio: 'inherit' });
 
-      fs.copyFileSync(fixtureInput, path.join(fixtureOutDir, 'bootstrap.html'));
+      fs.copyFileSync(fixtureInput, path.join(fixtureOutDir, 'framework.html'));
 
       const fixtureOutFile2 = path.join(fixtureOutDir, 'tailwind2.html');
       fs.copyFileSync(fixtureOutFile, fixtureOutFile2);
@@ -53,10 +64,10 @@ export default async function globalSetup() {
       }
 
       if (content1 !== content2) {
-        if (knownFailures.includes(fixture)) {
-          console.warn(`Idempotency check failed for ${fixture}, but it is in known-failures.json. Tolerating drift.`);
+        if (knownFailures.includes(fixture.name) || knownFailures.includes(`${fixture.framework}/${fixture.name}`)) {
+          console.warn(`Idempotency check failed for ${fixture.framework}/${fixture.name}, but it is in known-failures.json. Tolerating drift.`);
         } else {
-          throw new Error(`Idempotency check failed for ${fixture}! Repeated conversion altered the output.`);
+          throw new Error(`Idempotency check failed for ${fixture.framework}/${fixture.name}! Repeated conversion altered the output.`);
         }
       }
       fs.unlinkSync(fixtureOutFile2);

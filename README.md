@@ -6,17 +6,17 @@
   <img src="https://pbs.twimg.com/media/DQ-mDgSX0AUpCPL.png">
 </p>
 
-This tool can **convert your CSS framework (currently Bootstrap 4 & 5) classes** in HTML, JS/TS (React/JSX), Vue, Svelte, or server templates (PHP, Blade, Twig, ERB) to equivalent **Tailwind CSS** classes.
+This tool can **convert your CSS framework (Bootstrap 4 & 5, Bulma, Foundation) classes** in HTML, JS/TS (React/JSX), Vue, Svelte, or server templates (PHP, Blade, Twig, ERB) to equivalent **Tailwind CSS** classes.
 
 It has been rewritten from PHP to a modern TypeScript CLI capable of handling template strings, JSX nodes, and dynamic bindings securely without regex-matching the entire file payload.
 
 ## Features
 - Preserves your framework layout styling and colors dynamically.
-- Understands Vue, JSX, Svelte and will not mistakenly replace JS variables named similarly to bootstrap classes.
+- Understands Vue, JSX, Svelte and will not mistakenly replace JS variables named similarly to framework classes.
 - Ignores template dynamic injections (e.g. `{{ var }}`).
-- Auto-detects Bootstrap 4 vs Bootstrap 5 rules out of the box.
-- **Smart Class Classification:** Distinguishes between custom/BEM/Tailwind classes and unmapped Bootstrap classes. Unrecognized custom classes are safely ignored, preventing false positive errors during `check` or CI workflows.
-- **High-Fidelity Mappings:** Maps Bootstrap classes to Tailwind classes with a multi-token contextual rule engine (e.g. `btn btn-primary btn-lg` creates a tailored component style).
+- Auto-detects Bootstrap 4, Bootstrap 5, Bulma, and Foundation rules out of the box.
+- **Smart Class Classification:** Distinguishes between custom/BEM/Tailwind classes and unmapped framework classes. Unrecognized custom classes are safely ignored, preventing false positive errors during `check` or CI workflows.
+- **High-Fidelity Mappings:** Maps framework classes to Tailwind classes with a multi-token contextual rule engine (e.g. `btn btn-primary btn-lg` creates a tailored component style).
 - **Utility and Components Modes:** Configure the output style to replace components directly with utilities, or generate CSS `@apply` rules for cleaner HTML (`--components`).
 - **Dynamic Bindings Support:** Safely parses and partially replaces string literals inside Vue `:class` expressions without corrupting the file.
 
@@ -46,11 +46,12 @@ tailwindo transform ./src --write
 *If `--write` is omitted, Tailwindo will print the diffs to standard output without altering your files.*
 
 ### Options
-*   `--from <bootstrap4|bootstrap5|auto>`: Explicitly define the origin dialect, otherwise automatically inferred per file based on Bootstrap 5 specific classes (like `g-`, `ms-`).
+*   `--from <bootstrap4|bootstrap5|bulma|foundation|auto>`: Explicitly define the origin dialect, otherwise automatically inferred per file.
+*   `--prefix <prefix>`: Prefix applied to generated Tailwind classes (e.g., `tw-`). This mode is highly recommended for safely migrating large projects idempotently.
 *   `--extensions <csv>`: Define the exact extensions to watch. Defaults to `html,js,jsx,ts,tsx,vue,svelte,php,blade.php,twig,erb`.
 *   `--backup`: Create `.bak` files during `--write`.
 *   `--mode <mode>`: conversion mode (`utilities`, `fidelity`, `mixed`) (default: `mixed`).
-*   `--components <file>`: output CSS file with `@apply` rules (incremental migration mode).
+*   `--components <file>`: output CSS file with `@apply` rules for semantic framework components (incremental migration mode).
 
 ## Configuration and Modes
 
@@ -105,7 +106,7 @@ If you wish to add a new fixture:
 2. Add an `input.html` file containing Bootstrap markup.
 3. Add `data-twtest="your-unique-id"` attributes to elements you want the test to compare.
 
-If your fixture triggers valid discrepancies due to current conversion limitations, add its folder name to `playwright/known-failures.json` to quarantine it while maintaining CI stability.
+If your fixture triggers valid discrepancies due to current conversion limitations, add its folder name to `playwright/known-failures.json` to quarantine it while maintaining CI stability. The test harness automatically outputs per-element artifacts (including `bootstrap.json`, `tailwind.json`, and `diff.json`) to `playwright/.artifacts/<framework>/<fixture>/<element>/` to help in diagnosing mismatches.
 
 ## Help Us
 - If you find unexpected conversion results, please create an issue or pull request.
