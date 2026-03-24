@@ -8,6 +8,14 @@ export const getBulmaRules = (): RuleType[] => {
     { match: 'columns', replace: ['flex', 'flex-wrap', '-mx-3'], confidence: 0.8 },
     { match: 'column', replace: ['flex-1', 'px-3'], confidence: 0.8 },
 
+    // Spacing overrides for strict geometric parity
+    { match: 'mt-1', replace: ['mt-[0.25rem]'] },
+    { match: 'mt-2', replace: ['mt-[0.5rem]'] },
+    { match: 'mt-3', replace: ['mt-[0.75rem]'] },
+    { match: 'mt-4', replace: ['mt-[1rem]'] },
+    { match: 'mt-5', replace: ['mt-[1.5rem]'] },
+    { match: 'mt-6', replace: ['mt-[3rem]'] },
+
     // Widths
     { match: 'is-half', replace: ['w-1/2'] },
     { match: 'is-one-third', replace: ['w-1/3'] },

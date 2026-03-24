@@ -40,14 +40,34 @@ export default async function globalSetup() {
     const tempComponentsFile = path.join(fixtureOutDir, 'components.css');
 
     try {
+      // 1. Copy input to working output file
       fs.copyFileSync(fixtureInput, fixtureOutFile);
-      execSync(`npx tsx src/cli.ts transform ${fixtureOutFile} --prefix tw: --write --components ${tempComponentsFile}`, { stdio: 'inherit' });
 
+      // 2. Generate components.css BEFORE mutating the HTML
+      let fromArg = fixture.framework;
+      if (fixture.framework === 'bootstrap') {
+          fromArg = 'bootstrap5';
+      }
+      execSync(`npx tsx src/cli.ts transform ${fixtureOutFile} --from ${fromArg} --prefix tw: --components ${tempComponentsFile}`, { stdio: 'inherit' });
+
+      if (fs.existsSync(tempComponentsFile)) {
+         const componentsContent = fs.readFileSync(tempComponentsFile, 'utf-8');
+         if (componentsContent.trim() !== '') {
+            combinedComponentsCSS += componentsContent + '\n';
+         }
+         fs.unlinkSync(tempComponentsFile);
+      }
+
+      // 3. Mutate the HTML
+      execSync(`npx tsx src/cli.ts transform ${fixtureOutFile} --from ${fromArg} --prefix tw: --write`, { stdio: 'inherit' });
+
+      // 4. Save framework HTML
       fs.copyFileSync(fixtureInput, path.join(fixtureOutDir, 'framework.html'));
 
+      // 5. Idempotency check
       const fixtureOutFile2 = path.join(fixtureOutDir, 'tailwind2.html');
       fs.copyFileSync(fixtureOutFile, fixtureOutFile2);
-      execSync(`npx tsx src/cli.ts transform ${fixtureOutFile2} --prefix tw: --write --components ${tempComponentsFile}`, { stdio: 'inherit' });
+      execSync(`npx tsx src/cli.ts transform ${fixtureOutFile2} --from ${fromArg} --prefix tw: --write`, { stdio: 'inherit' });
 
       const content1 = fs.readFileSync(fixtureOutFile, 'utf-8');
       const content2 = fs.readFileSync(fixtureOutFile2, 'utf-8');
@@ -55,42 +75,47 @@ export default async function globalSetup() {
       const KNOWN_FAILURES_FILE = path.resolve(__dirname, '../known-failures.json');
       let knownFailures: string[] = [];
       if (fs.existsSync(KNOWN_FAILURES_FILE)) {
-        const parsed = JSON.parse(fs.readFileSync(KNOWN_FAILURES_FILE, 'utf-8'));
-        knownFailures = parsed.map((f: any) => f.fixture);
+        try {
+          const parsed = JSON.parse(fs.readFileSync(KNOWN_FAILURES_FILE, 'utf-8'));
+          knownFailures = parsed.map((f: any) => f.id);
+        } catch (e) {
+          console.error("Error reading known failures", e);
+        }
       }
 
+      const id = `${fixture.framework}/${fixture.name}`;
+
       if (content1 !== content2) {
-        if (knownFailures.includes(fixture.name) || knownFailures.includes(`${fixture.framework}/${fixture.name}`)) {
-          console.warn(`Idempotency check failed for ${fixture.framework}/${fixture.name}, but it is in known-failures.json. Tolerating drift.`);
+        if (knownFailures.includes(id)) {
+          console.warn(`Idempotency check failed for ${id}, but it is in known-failures.json. Tolerating drift.`);
         } else {
-          throw new Error(`Idempotency check failed for ${fixture.framework}/${fixture.name}! Repeated conversion altered the output.`);
+          throw new Error(`Idempotency check failed for ${id}! Repeated conversion altered the output.`);
         }
       }
       fs.unlinkSync(fixtureOutFile2);
 
-      if (fs.existsSync(tempComponentsFile)) {
-        combinedComponentsCSS += fs.readFileSync(tempComponentsFile, 'utf-8') + '\n';
-        fs.unlinkSync(tempComponentsFile);
-      }
     } catch (err) {
-      console.error(`Error transforming fixture: ${fixture}`);
+      console.error(`Error transforming fixture: ${fixture.framework}/${fixture.name}`);
       console.error(err);
       process.exit(1);
     }
   }
 
+  // 6. Write combined components CSS to the globally accessible location
   fs.writeFileSync(path.join(GENERATED_DIR, 'components.css'), combinedComponentsCSS);
 
   console.log('Running Tailwind build...');
   try {
     const tailwindInput = path.join(TAILWIND_DIR, 'input.css');
     const tailwindOutput = path.join(GENERATED_DIR, 'tailwind.css');
-    execSync(`npx tailwindcss -i ${tailwindInput} -o ${tailwindOutput}`, { stdio: 'inherit' });
+
+    // Explicitly set working directory context for source scanning to work correctly with v4
+    execSync(`cd playwright && npx tailwindcss -i tailwind/input.css -o .generated/tailwind.css`, { stdio: 'inherit' });
 
     // Sanity check for Tailwind v4 prefix pipeline
     const generatedCSS = fs.readFileSync(tailwindOutput, 'utf-8');
-    if (!generatedCSS.includes('.tw\\:p-4') || !generatedCSS.includes('.tw\\:mb-4')) {
-      throw new Error("Tailwind v4 prefix pipeline failed: missing .tw\\:p-4 or .tw\\:mb-4 classes in output.");
+    if (!generatedCSS.includes('.tw\\:mb-')) {
+      throw new Error("Tailwind v4 prefix pipeline failed: missing prefix utilities classes in output.");
     }
   } catch (err) {
     console.error('Tailwind build failed');

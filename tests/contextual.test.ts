@@ -12,7 +12,7 @@ describe('Contextual Rules Engine', () => {
     expect(result.tokens).not.toContain('btn-lg');
     expect(result.tokens).toContain('custom-class');
     expect(result.tokens).toContain('bg-blue-600'); // from btn-primary
-    expect(result.tokens).toContain('text-lg'); // from btn-lg
+    expect(result.tokens).toContain('text-[1.25rem]'); // from btn-lg explicitly mapped to literal
   });
 
   it('should transform forms correctly', () => {

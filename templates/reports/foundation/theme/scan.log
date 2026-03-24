@@ -1,9 +1,9 @@
 --- Scan Summary ---
 Files scanned: 1
 Total class tokens: 25
-Mapped tokens: 12
-Unmapped framework tokens: 5
-Average confidence: 92.5%
+Mapped tokens: 15
+Unmapped framework tokens: 3
+Average confidence: 92.0%
 
 Unmapped framework classes (sample):
-card-section, card, text-white, bg-primary
+text-white, bg-primary

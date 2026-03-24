@@ -14,7 +14,7 @@ export const dialects = {
 export type DialectName = keyof typeof dialects | 'auto';
 
 export function autoDetectDialect(content: string): keyof typeof dialects {
-  let scores = {
+  const scores = {
     bootstrap5: 0,
     bootstrap4: 0,
     bulma: 0,
