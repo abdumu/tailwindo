@@ -1,11 +1,5 @@
 [
   {
-    "id": "bootstrap/buttons",
-    "reason": "Geometric differences due to inherent Tailwind 1px border vs standard unboxed rules mapping slightly off. Exit: Fine-tune components or accept standard Tailwind approximations for forms.",
-    "date_added": "2026-03-14T00:00:00Z",
-    "owner": "abdumu"
-  },
-  {
     "id": "bootstrap/grid",
     "reason": "Idiomatic-first approach to container width mismatch. Exit: Implement fidelity-first container mapping or define components rule.",
     "date_added": "2026-03-14T00:00:00Z",
@@ -74,12 +68,6 @@
   {
     "id": "foundation/grid",
     "reason": "Idiomatic-first approach to grid width mismatch. Exit: Implement fidelity-first container mapping or define components rule.",
-    "date_added": "2026-03-14T00:00:00Z",
-    "owner": "abdumu"
-  },
-  {
-    "id": "bootstrap/mission2",
-    "reason": "Mission 2 component finding unboxed layout deviates slightly. Exit: Verify mappings.",
     "date_added": "2026-03-14T00:00:00Z",
     "owner": "abdumu"
   },
