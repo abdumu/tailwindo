@@ -88,5 +88,35 @@
     "reason": "Mission 2 component finding unboxed layout deviates slightly. Exit: Verify mappings.",
     "date_added": "2026-03-14T00:00:00Z",
     "owner": "abdumu"
+  },
+  {
+    "id": "bootstrap/responsive-alignment",
+    "reason": "Complex grid nesting and responsive alignment overlap in utility resolution. Exit: Implement precise media query mappings.",
+    "date_added": "2024-03-24T00:00:00Z",
+    "owner": "abdumu"
+  },
+  {
+    "id": "tailwind/arbitrary-value",
+    "reason": "Arbitrary value utilities and layered variants not fully mapped to legacy frameworks. Exit: Unbox raw values or apply components rule.",
+    "date_added": "2024-03-24T00:00:00Z",
+    "owner": "abdumu"
+  },
+  {
+    "id": "mui/adaptive-layouts",
+    "reason": "Adaptive layouts and combined spacing props in MUI are complex to map directly. Exit: Re-map to custom variants or use grid mapping.",
+    "date_added": "2024-03-24T00:00:00Z",
+    "owner": "abdumu"
+  },
+  {
+    "id": "foundation/offset-grids",
+    "reason": "Offset grids and input groups have intricate sizing differences. Exit: Fallback to exact fraction calculations or unbox.",
+    "date_added": "2024-03-24T00:00:00Z",
+    "owner": "abdumu"
+  },
+  {
+    "id": "bulma/responsive-helpers",
+    "reason": "Responsive helpers and color+size collisions overlap. Exit: Verify utility collision resolution.",
+    "date_added": "2024-03-24T00:00:00Z",
+    "owner": "abdumu"
   }
 ]

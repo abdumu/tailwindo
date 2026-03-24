@@ -35,21 +35,26 @@ export class Converter {
   }
 
   isFrameworkLikeToken(token: string): boolean {
+    if (token.startsWith('!')) return false;
+    if (token.includes('[')) return false;
     if (token.includes(':')) return false;
     if (this.prefix && token.startsWith(this.prefix)) return false;
     if (token.startsWith('tw-')) return false;
     if (token.includes('__') || token.includes('--')) return false; // BEM
 
     const patterns = [
+      // Material UI
+      /^Mui[A-Za-z0-9]+-/,
+
       // Bootstrap
       /^(m|p)[trblxyse]?-(0|1|2|3|4|5|auto)$/, // spacing
       /^d-\w+/, // display
-      /^(text|bg)-\w+/, // text/bg
-      /^(justify-content|align-items|align-self)-\w+/, // flex
+      /^(text|bg|border|shadow|w)-\w+/, // colors/borders/shadow/width
+      /^(justify-content|align-items|align-self)(-[a-z]+)?-\w+/, // flex and responsive flex
       /^(ms|me|ps|pe)-(0|1|2|3|4|5|auto)$/, // bs5 logical
       /^(g|gx|gy)-(0|1|2|3|4|5)$/, // gap
       /^(fw|fst)-\w+/, // weights
-      /^(container|row|col|btn|alert|badge|card|form)(-|$)/, // grid/components
+      /^(container|row|col|btn|alert|badge|card|form|input-group|custom-select)(-|$)/, // grid/components
 
       // Bulma
       /^(is|has)-/, // modifiers
@@ -58,9 +63,9 @@ export class Converter {
       // Foundation
       /^grid-[xy]/, // grid
       /^cell$/, // grid cell
-      /^(small|medium|large)-\d+/, // sizing
+      /^(small|medium|large)-(\d+|offset-\d+)/, // sizing & offsets
       /^(show-for|hide-for)-/, // visibility
-      /^(callout|top-bar|menu)$/ // components
+      /^(callout|top-bar|menu|button|alert|radius)$/ // components
     ];
 
     return patterns.some(pattern => pattern.test(token));
