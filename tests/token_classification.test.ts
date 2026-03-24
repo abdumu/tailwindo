@@ -3,7 +3,7 @@ import { Converter, Dialect } from '../src/engine/converter.js';
 
 describe('Token Classification', () => {
   it('identifies unmapped bootstrap tokens', () => {
-    const converter = new Converter({ name: 'dummy', rules: [] });
+    const converter = new Converter({ name: 'bootstrap5', rules: [] });
 
     // Spacing
     expect(converter.isFrameworkLikeToken('mt-3')).toBe(true);
@@ -18,7 +18,7 @@ describe('Token Classification', () => {
   });
 
   it('identifies unmapped bulma tokens', () => {
-    const converter = new Converter({ name: 'dummy', rules: [] });
+    const converter = new Converter({ name: 'bulma', rules: [] });
 
     expect(converter.isFrameworkLikeToken('is-primary')).toBe(true);
     expect(converter.isFrameworkLikeToken('has-text-centered')).toBe(true);
@@ -27,7 +27,7 @@ describe('Token Classification', () => {
   });
 
   it('identifies unmapped foundation tokens', () => {
-    const converter = new Converter({ name: 'dummy', rules: [] });
+    const converter = new Converter({ name: 'foundation', rules: [] });
 
     expect(converter.isFrameworkLikeToken('grid-x')).toBe(true);
     expect(converter.isFrameworkLikeToken('cell')).toBe(true);
@@ -37,7 +37,7 @@ describe('Token Classification', () => {
   });
 
   it('identifies custom/tailwind tokens', () => {
-    const converter = new Converter({ name: 'dummy', rules: [] });
+    const converter = new Converter({ name: 'bootstrap5', rules: [] });
 
     // Custom prefixes/BEM
     expect(converter.isFrameworkLikeToken('app-header')).toBe(false);
