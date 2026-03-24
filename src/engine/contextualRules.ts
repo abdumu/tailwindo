@@ -40,18 +40,19 @@ const btnBase = [
   'border-solid',
   'border-gray-200',
   'border-transparent',
-  'py-1.5',
-  'px-4',
-  'rounded',
-  'leading-normal',
+  'py-[0.375rem]',
+  'px-[0.75rem]',
+  'rounded-[0.375rem]',
+  'leading-[1.5]',
+  'text-[1rem]',
   'no-underline',
   'transition-colors',
   'duration-150',
 ];
 
 const btnSizes: Record<string, string[]> = {
-  'btn-sm': ['py-1', 'px-2', 'text-sm', 'rounded-sm'],
-  'btn-lg': ['py-2', 'px-6', 'text-lg', 'rounded-lg'],
+  'btn-sm': ['py-[0.25rem]', 'px-[0.5rem]', 'text-[0.875rem]', 'rounded-[0.25rem]', 'leading-[1.5]'],
+  'btn-lg': ['py-[0.5rem]', 'px-[1rem]', 'text-[1.25rem]', 'rounded-[0.5rem]', 'leading-[1.5]'],
 };
 
 const getBtnColors = (variant: string, colors: Record<string, string>) => {
@@ -89,9 +90,22 @@ export const contextualRules: ContextRule[] = [
         dark: 'gray-800',
       };
 
+      // Determine size overrides before pushing base
+      const hasSm = tokens.includes('btn-sm');
+      const hasLg = tokens.includes('btn-lg');
+
+      const filteredBtnBase = btnBase.filter(cls => {
+         if (hasSm || hasLg) {
+           if (cls.startsWith('py-') || cls.startsWith('px-') || cls.startsWith('text-') || cls.startsWith('rounded-') || cls.startsWith('leading-')) {
+             return false;
+           }
+         }
+         return true;
+      });
+
       // Base btn
       newTokens = remove(newTokens, ['btn']);
-      mapped.push({ from: ['btn'], to: btnBase, confidence: 0.9 });
+      mapped.push({ from: ['btn'], to: filteredBtnBase, confidence: 0.9 });
 
       // Variants
       for (const variant of variants) {
@@ -147,8 +161,14 @@ export const contextualRules: ContextRule[] = [
           dark: 'gray-800'
       };
 
+      const isLarge = newTokens.includes('is-large');
+
       newTokens = remove(newTokens, ['button']);
-      mapped.push({ from: ['button'], to: ['inline-flex', 'items-center', 'justify-center', 'px-4', 'py-2', 'border', 'rounded', 'leading-none', 'focus:outline-none', 'transition-colors'], confidence: 0.9 });
+      if (isLarge) {
+          mapped.push({ from: ['button'], to: ['relative', 'inline-flex', 'items-center', 'justify-center', 'px-[1.5rem]', 'py-[0.6875rem]', 'border-[1px]', 'border-solid', 'border-transparent', 'rounded-[4px]', 'leading-[1.5]', 'text-[1.5rem]', 'focus:outline-none', 'transition-colors'], confidence: 0.9 });
+      } else {
+          mapped.push({ from: ['button'], to: ['relative', 'inline-flex', 'items-center', 'justify-center', 'px-[1rem]', 'py-[0.4375rem]', 'border-[1px]', 'border-solid', 'border-transparent', 'rounded-[4px]', 'leading-[1.5]', 'text-[1rem]', 'focus:outline-none', 'transition-colors'], confidence: 0.9 });
+      }
 
       for (const variant of Object.keys(colors)) {
         if (newTokens.includes(`is-${variant}`)) {
@@ -175,7 +195,7 @@ export const contextualRules: ContextRule[] = [
       }
       if (newTokens.includes('is-large')) {
           newTokens = remove(newTokens, ['is-large']);
-          mapped.push({ from: ['is-large'], to: ['text-xl', 'px-6', 'py-3'], confidence: 0.9 });
+          mapped.push({ from: ['is-large'], to: [], confidence: 0.9 });
       }
 
       const allToTokens = mapped.flatMap((m) => m.to);
@@ -194,6 +214,48 @@ export const contextualRules: ContextRule[] = [
 
       newTokens = remove(newTokens, ['columns']);
       mapped.push({ from: ['columns'], to: ['flex', 'flex-wrap', '-mx-3'], confidence: 0.9 });
+
+      const allToTokens = mapped.flatMap((m) => m.to);
+      return { tokens: [...newTokens, ...allToTokens], mapped };
+    },
+    confidence: 0.9,
+  },
+  // Foundation Button
+  {
+    name: 'foundation-button',
+    appliesToDialects: ['foundation'] as any[],
+    match: (tokens) => tokens.includes('button'),
+    transform: (tokens) => {
+      let newTokens = [...tokens];
+      const mapped: { from: string[]; to: string[]; confidence: number }[] = [];
+
+      newTokens = remove(newTokens, ['button']);
+
+      const hasLarge = newTokens.includes('large');
+      const hasSmall = newTokens.includes('small');
+      const hasTiny = newTokens.includes('tiny');
+
+      let buttonBase = ['inline-block', 'align-middle', 'text-center', 'cursor-pointer', 'px-[1rem]', 'py-[0.85em]', 'text-[0.9rem]', 'leading-[1]', 'font-normal', 'transition-colors', 'duration-300', 'bg-blue-600', 'text-white', 'hover:bg-blue-700', 'border-[1px]', 'border-solid', 'border-transparent', 'mb-[1rem]', 'm-0'];
+
+      if (hasLarge || hasSmall || hasTiny) {
+         buttonBase = buttonBase.filter(cls => !cls.startsWith('py-') && !cls.startsWith('px-') && !cls.startsWith('text-') && cls !== 'leading-[1]');
+      }
+
+      const hasSecondary = newTokens.includes('secondary');
+      const hasSuccess = newTokens.includes('success');
+      const hasWarning = newTokens.includes('warning');
+      const hasAlert = newTokens.includes('alert');
+
+      if (hasSecondary || hasSuccess || hasWarning || hasAlert) {
+         buttonBase = buttonBase.filter(cls => !cls.startsWith('bg-') && !cls.startsWith('text-') && !cls.startsWith('hover:bg-'));
+      }
+
+      mapped.push({ from: ['button'], to: buttonBase, confidence: 0.9 });
+
+      if (hasLarge) {
+        newTokens = remove(newTokens, ['large']);
+        mapped.push({ from: ['large'], to: ['px-[1.25rem]', 'py-[1.0625rem]', 'text-[1.25rem]'], confidence: 0.9 });
+      }
 
       const allToTokens = mapped.flatMap((m) => m.to);
       return { tokens: [...newTokens, ...allToTokens], mapped };
@@ -302,7 +364,7 @@ export const contextualRules: ContextRule[] = [
       const mapped: { from: string[]; to: string[]; confidence: number }[] = [];
 
       newTokens = remove(newTokens, ['alert']);
-      mapped.push({ from: ['alert'], to: ['relative', 'py-3', 'px-4', 'mb-4', 'border', 'border-solid', 'border-gray-200', 'border-transparent', 'rounded'], confidence: 0.9 });
+      mapped.push({ from: ['alert'], to: ['relative', 'p-[1rem]', 'mb-[1rem]', 'border-[1px]', 'border-solid', 'border-transparent', 'rounded-[0.375rem]'], confidence: 0.9 });
 
       const colors = options?.colors || {
         primary: 'blue-800',

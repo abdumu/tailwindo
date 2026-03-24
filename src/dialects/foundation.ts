@@ -22,7 +22,9 @@ export const getFoundationRules = (): RuleType[] => {
     }, confidence: 0.8 },
 
     // Components
-    { match: 'button', replace: ['inline-block', 'align-middle', 'text-center', 'cursor-pointer', 'px-4', 'py-3', 'text-sm', 'leading-normal', 'font-normal', 'transition-colors', 'duration-300', 'bg-blue-600', 'text-white', 'hover:bg-blue-700'] },
+    { match: 'card', replace: ['flex', 'flex-col', 'mb-[1rem]', 'border-[1px]', 'border-solid', 'border-[#e6e6e6]', 'bg-[#fefefe]', 'text-[#0a0a0a]'] },
+    { match: 'card-divider', replace: ['flex', 'flex-1', 'p-[1rem]', 'bg-[#e6e6e6]'] },
+    { match: 'card-section', replace: ['flex-1', 'p-[1rem]'] },
     { match: 'callout', replace: ['relative', 'mb-4', 'p-4', 'border', 'border-gray-300', 'bg-gray-100', 'text-gray-800'] },
     { match: 'top-bar', replace: ['flex', 'items-center', 'justify-between', 'p-2', 'bg-gray-200'] },
     { match: 'menu', replace: ['flex', 'flex-wrap', 'list-none', 'p-0', 'm-0'] },

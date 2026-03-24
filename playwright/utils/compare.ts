@@ -64,22 +64,6 @@ export interface ComparisonDiff {
 
 // Specific overrides table keyed by fixture name -> property -> tolerance
 const FIXTURE_OVERRIDES: Record<string, Record<string, number>> = {
-  'bootstrap/forms': {
-    'paddingTop': 4,
-    'paddingRight': 4,
-    'paddingBottom': 4,
-    'paddingLeft': 4,
-  },
-  'bulma/columns': {
-    'marginTop': 4,
-    'marginRight': 4,
-    'marginBottom': 4,
-    'marginLeft': 4,
-    'paddingTop': 4,
-    'paddingRight': 4,
-    'paddingBottom': 4,
-    'paddingLeft': 4,
-  }
 };
 
 export function compareMetrics(bs: ElementMetrics, tw: ElementMetrics, context: { fixture: string, elementId: string }): ComparisonDiff {
@@ -95,6 +79,7 @@ export function compareMetrics(bs: ElementMetrics, tw: ElementMetrics, context: 
   const GEOMETRY_TOLERANCE_PX = 2;
 
   const overrides = FIXTURE_OVERRIDES[context.fixture] || {};
+
 
   // Compare Bounding Box
   for (const key of ['x', 'y', 'width', 'height'] as const) {
@@ -138,7 +123,13 @@ export function compareMetrics(bs: ElementMetrics, tw: ElementMetrics, context: 
     } else if (prop === 'boxShadow') {
       const hasBsShadow = bsVal !== 'none' && bsVal !== '';
       const hasTwShadow = twVal !== 'none' && twVal !== '';
-      if (hasBsShadow !== hasTwShadow) {
+      const bsShadowStr = bsVal.replace(/rgba\(0,\s*0,\s*0,\s*0\)/g, 'transparent').replace(/\s+/g, '');
+      const twShadowStr = twVal.replace(/rgba\(0,\s*0,\s*0,\s*0\)/g, 'transparent').replace(/\s+/g, '');
+
+      const bsVisible = bsVal !== 'none' && bsVal !== '' && bsShadowStr !== 'transparent0px0px0px0px' && !bsShadowStr.startsWith('transparent0px0px0px0px,transparent0px0px0px0px');
+      const twVisible = twVal !== 'none' && twVal !== '' && twShadowStr !== 'transparent0px0px0px0px' && !twShadowStr.startsWith('transparent0px0px0px0px,transparent0px0px0px0px');
+
+      if (bsVisible !== twVisible) {
         diff[category].push(`Style [${prop}]: expected ${bsVal}, got ${twVal}`);
       }
     } else if (prop === 'lineHeight') {

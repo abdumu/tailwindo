@@ -1,4 +1,4 @@
 @import "tailwindcss" prefix(tw);
-@source "../.generated/**/*.html";
-@source "../site/**/*.html";
-@source "../site/**/*.js";
+@import "../.generated/components.css";
+@source "../.generated";
+@source "../site";

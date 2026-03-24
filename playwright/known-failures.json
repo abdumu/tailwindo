@@ -1,97 +1,91 @@
 [
   {
-    "id": "bootstrap/forms",
-    "reason": "spacing mappings for bootstrap",
+    "id": "bootstrap/buttons",
+    "reason": "Geometric differences due to inherent Tailwind 1px border vs standard unboxed rules mapping slightly off. Exit: Fine-tune components or accept standard Tailwind approximations for forms.",
     "date_added": "2026-03-14T00:00:00Z",
     "owner": "abdumu"
   },
   {
     "id": "bootstrap/grid",
-    "reason": "idiomatic-first approach to container width mismatch",
-    "date_added": "2026-03-14T00:00:00Z",
-    "owner": "abdumu"
-  },
-  {
-    "id": "bootstrap/alerts",
-    "reason": "Bootstrap alerts radius/height missing prefix utility mapping",
-    "date_added": "2026-03-14T00:00:00Z",
-    "owner": "abdumu"
-  },
-  {
-    "id": "bootstrap/buttons",
-    "reason": "Bootstrap buttons radius/height missing prefix utility mapping",
+    "reason": "Idiomatic-first approach to container width mismatch. Exit: Implement fidelity-first container mapping or define components rule.",
     "date_added": "2026-03-14T00:00:00Z",
     "owner": "abdumu"
   },
   {
     "id": "bootstrap/cards",
-    "reason": "Bootstrap cards radius/height missing prefix utility mapping",
+    "reason": "Geometric layout nuances in borders and shadows slightly deviate from Tailwind output. Exit: Unbox raw values.",
     "date_added": "2026-03-14T00:00:00Z",
     "owner": "abdumu"
   },
   {
-    "id": "bootstrap/mission2",
-    "reason": "Mission 2 new component finding",
+    "id": "bootstrap/forms",
+    "reason": "Geometric layout nuances in borders and shadows slightly deviate from Tailwind output. Exit: Unbox raw values.",
     "date_added": "2026-03-14T00:00:00Z",
     "owner": "abdumu"
   },
   {
     "id": "bulma/buttons",
-    "reason": "missing bulma contextual mappings",
-    "date_added": "2026-03-14T00:00:00Z",
-    "owner": "abdumu"
-  },
-  {
-    "id": "bulma/forms",
-    "reason": "spacing needs pseudo-selectors",
-    "date_added": "2026-03-14T00:00:00Z",
-    "owner": "abdumu"
-  },
-  {
-    "id": "bulma/columns",
-    "reason": "spacing for bulma columns",
+    "reason": "Geometric padding and margin mappings have slight deviations from exact Bulma specification. Exit: Align with arbitrary utility rules.",
     "date_added": "2026-03-14T00:00:00Z",
     "owner": "abdumu"
   },
   {
     "id": "bulma/cards",
-    "reason": "Bulma cards layout mismatch requires more investigation.",
+    "reason": "Geometric layout nuances in borders and shadows slightly deviate from Tailwind output. Exit: Unbox raw values.",
+    "date_added": "2026-03-14T00:00:00Z",
+    "owner": "abdumu"
+  },
+  {
+    "id": "bulma/columns",
+    "reason": "Geometric column layout nuances slightly deviate from Tailwind output. Exit: Unbox raw values.",
+    "date_added": "2026-03-14T00:00:00Z",
+    "owner": "abdumu"
+  },
+  {
+    "id": "bulma/forms",
+    "reason": "Geometric layout nuances in forms slightly deviate from Tailwind output. Exit: Unbox raw values.",
     "date_added": "2026-03-14T00:00:00Z",
     "owner": "abdumu"
   },
   {
     "id": "bulma/mission2",
-    "reason": "Mission 2 new component finding",
-    "date_added": "2026-03-14T00:00:00Z",
-    "owner": "abdumu"
-  },
-  {
-    "id": "foundation/grid",
-    "reason": "spacing for foundation grid",
-    "date_added": "2026-03-14T00:00:00Z",
-    "owner": "abdumu"
-  },
-  {
-    "id": "foundation/callout",
-    "reason": "missing foundation component rules",
+    "reason": "Mission 2 component finding unboxed layout deviates slightly. Exit: Verify mappings.",
     "date_added": "2026-03-14T00:00:00Z",
     "owner": "abdumu"
   },
   {
     "id": "foundation/buttons",
-    "reason": "Foundation buttons height missing prefix utility mapping",
+    "reason": "Geometric layout nuances in buttons deviate slightly. Exit: Unbox raw values.",
+    "date_added": "2026-03-14T00:00:00Z",
+    "owner": "abdumu"
+  },
+  {
+    "id": "foundation/callout",
+    "reason": "Geometric layout nuances in callouts deviate slightly. Exit: Unbox raw values.",
     "date_added": "2026-03-14T00:00:00Z",
     "owner": "abdumu"
   },
   {
     "id": "foundation/cards",
-    "reason": "Foundation cards height missing prefix utility mapping",
+    "reason": "Geometric layout nuances in borders and shadows slightly deviate from Tailwind output. Exit: Unbox raw values.",
+    "date_added": "2026-03-14T00:00:00Z",
+    "owner": "abdumu"
+  },
+  {
+    "id": "foundation/grid",
+    "reason": "Idiomatic-first approach to grid width mismatch. Exit: Implement fidelity-first container mapping or define components rule.",
+    "date_added": "2026-03-14T00:00:00Z",
+    "owner": "abdumu"
+  },
+  {
+    "id": "bootstrap/mission2",
+    "reason": "Mission 2 component finding unboxed layout deviates slightly. Exit: Verify mappings.",
     "date_added": "2026-03-14T00:00:00Z",
     "owner": "abdumu"
   },
   {
     "id": "foundation/mission2",
-    "reason": "Mission 2 new component finding",
+    "reason": "Mission 2 component finding unboxed layout deviates slightly. Exit: Verify mappings.",
     "date_added": "2026-03-14T00:00:00Z",
     "owner": "abdumu"
   }
