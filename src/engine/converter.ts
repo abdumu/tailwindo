@@ -66,7 +66,7 @@ export class Converter {
     if (this.dialect.name === 'bulma') {
       const bulmaPatterns = [
         /^(is|has)-/, // modifiers
-        /^(columns|column|section|hero|navbar|notification|message|box|field|control|input|textarea|select|label|help|button)$/ // components
+        /^(container|columns|column|section|hero|navbar|notification|message|box|field|control|input|textarea|select|label|help|button|card|title|subtitle)$/ // components
       ];
       if (bulmaPatterns.some(pattern => pattern.test(token))) return true;
     }
@@ -77,7 +77,7 @@ export class Converter {
         /^cell$/, // grid cell
         /^(small|medium|large)-(\d+|offset-\d+)/, // sizing & offsets
         /^(show-for|hide-for)-/, // visibility
-        /^(callout|top-bar|menu|button|alert|radius|card)$/ // components
+        /^(grid-container|callout|top-bar|menu|button|alert|radius|card|label|badge)$/ // components
       ];
       if (foundationPatterns.some(pattern => pattern.test(token))) return true;
     }
